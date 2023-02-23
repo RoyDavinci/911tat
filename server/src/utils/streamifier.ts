@@ -1,8 +1,8 @@
-import {UploadStream, v2 as cloudinary} from "cloudinary";
+import {UploadApiErrorResponse, UploadApiResponse, UploadStream, v2 as cloudinary} from "cloudinary";
 import streamifier from "streamifier";
 import {logger} from "./logger";
 
-export const streamUpload = (req: Buffer) => {
+export const streamUpload = (req: Buffer): Promise<UploadApiErrorResponse | UploadApiResponse> => {
     logger.info("gotten to stream upload");
 
     return new Promise((resolve, reject) => {

@@ -11,10 +11,17 @@ import healthRouter from "./controllers/health/health.service";
 import apiV1Router from "./routes/routes";
 import {logger} from "./utils/logger";
 import {config} from "./config";
+import {v2 as cloudinary} from "cloudinary";
 
 const app = express();
 
 const port = normalizePort(process.env.PORT || "4200");
+
+cloudinary.config({
+    cloud_name: config.cloudinaryConfig.CLOUDINARY_NAME,
+    api_key: config.cloudinaryConfig.CLOUDINARY_API_KEY,
+    api_secret: config.cloudinaryConfig.CLOUDNIARY_API_SECRET,
+});
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));

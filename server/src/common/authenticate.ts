@@ -7,16 +7,17 @@ export const authenticateLocal = async (req: Request, res: Response, next: NextF
     try {
         return passport.authenticate("local", (error: Error, user: Express.User, info: {message: string}) => {
             logger.info("na here e dey");
-            if (error) return res.status(400).json({message: info.message, error: error.message});
+            if (error) return res.status(400).json({message: info.message, error: error.message, err: "has error"});
             logger.info(error);
             if (!user) {
                 logger.info(user);
 
-                return res.status(400).json({message: info.message});
+                return res.status(400).json({message: info.message, err: "no user"});
             }
 
             return req.logIn(user, err => {
-                if (err) return res.status(400).json({message: info.message, error: err.message});
+                if (err)
+                    return res.status(400).json({message: info.message, error: err.message, err: "error on login"});
 
                 return next();
             });
@@ -30,10 +31,7 @@ export const authenticateLocal = async (req: Request, res: Response, next: NextF
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization)
-        return next({
-            statusCode: STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED,
-            message: "header token needed",
-        });
+        return res.status(STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED).json({message: "header token needed"});
 
     return passport.authenticate("jwt", (error: Error, user: Express.User) => {
         if (error) {

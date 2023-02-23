@@ -4,6 +4,7 @@ import passportJwt from "passport-jwt";
 import bcrypt from "bcryptjs";
 import {config} from "../config";
 import {prisma} from "../db/prisma";
+import {logger} from "../utils/logger";
 
 const options = {
     jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -45,7 +46,7 @@ export const passportService = (passport: PassportStatic) => {
                     if (user.accountStatus === 123456789) {
                         return done(null, false, {message: "user has been blacklisted"});
                     }
-
+                    logger.info(user);
                     return done(null, user, {message: "authenticated successfully"});
                 } catch (error) {
                     return done(error, false, {message: "Error processing your info"});

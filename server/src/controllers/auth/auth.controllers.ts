@@ -7,6 +7,7 @@ import {Prisma} from "@prisma/client";
 import {IUser} from "./auth.interfaces";
 import jwt from "jsonwebtoken";
 import {config} from "../../config";
+import {streamUpload} from "../../utils/streamifier";
 
 export const registerAsClient = async (req: Request, res: Response) => {
     const {email, password, username} = req.body;
@@ -120,12 +121,32 @@ export const login = async (req: Request, res: Response) => {
             return res.status(200).json({message: "login successful", user: {findAdmin}, token});
         }
         const findUser = await prisma.users.findUnique({where: {user_id}});
-        if (!findUser || findUser.client_id || findUser.escort_id)
-            return res.status(400).json({message: "user not found"});
+
+        if (!findUser) return res.status(400).json({message: "user not found"});
         const token = jwt.sign({id: findUser.user_id}, config.server.secret);
         return res.status(200).json({message: "login successful", user: {findUser}, token});
     } catch (error) {
         logger.info(error);
         return res.status(400).json({message: "error on login", error});
+    }
+};
+
+export const updateProfileImage = async (req: Request, res: Response) => {
+    const {user_id} = req.user as unknown as IUser;
+
+    try {
+        const findUser = await prisma.users.findUnique({where: {user_id}});
+        if (!findUser) return res.status(400).json({message: "user not found"});
+        if (!req.file) return res.status(400).json({message: "file needed"});
+        const data = await streamUpload(req.file.buffer);
+        if (data.message) return res.status(data.http_code).json({message: "an error occured", err: data.message});
+        await prisma.users.update({where: {user_id}, data: {profilePhoto: data.secure_url}});
+        return res.status(200).json({
+            message: "photo updated",
+            user: {id: findUser.user_id, email: findUser.email, profilePicture: data.secure_url},
+        });
+    } catch (error) {
+        logger.info(error);
+        return res.status(200).json({message: "an error occured on photo change", error});
     }
 };

@@ -12,6 +12,7 @@ model users {
   username        String         @db.VarChar(200)
   email           String         @unique @db.VarChar(200)
   phone           String?
+  profilePhoto    String?
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
