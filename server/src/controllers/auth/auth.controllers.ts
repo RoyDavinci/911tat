@@ -25,13 +25,16 @@ export const registerAsClient = async (req: Request, res: Response) => {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner
             if (e.code === "P2002") {
+                logger.info(e);
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
                 });
             }
+            logger.info(e);
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
         }
+        logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
             .json({error: e, message: "an error occured on creating a user"});
@@ -48,6 +51,7 @@ export const registerAsEscort = async (req: Request, res: Response) => {
         const newUser = await prisma.users.create({
             data: {escort_id: createEscort.escort_id, email, username, password: hashedPassword, phone},
         });
+
         return res.status(200).json({
             message: "user created",
             user: {id: newUser.user_id, username: newUser.username, email: newUser.email, phone: newUser.phone},
@@ -55,14 +59,17 @@ export const registerAsEscort = async (req: Request, res: Response) => {
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner
+            logger.info(e);
             if (e.code === "P2002") {
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
                 });
             }
+            logger.info(e);
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
         }
+        logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
             .json({error: e, message: "an error occured on creating a user"});
@@ -84,13 +91,16 @@ export const blacklistUser = async (req: Request, res: Response) => {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner
             if (e.code === "P2002") {
+                logger.info(e);
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
                 });
             }
+            logger.info(e);
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
         }
+        logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
             .json({error: e, message: "an error occured on creating a user"});

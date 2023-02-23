@@ -11,7 +11,7 @@ model users {
   user_id         Int            @id @default(autoincrement())
   username        String         @db.VarChar(200)
   email           String         @unique @db.VarChar(200)
-  phone           Int?
+  phone           String?
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
