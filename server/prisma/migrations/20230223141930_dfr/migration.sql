@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `users` ADD COLUMN `accountStatus` INTEGER NOT NULL DEFAULT 1234567890;

@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  user_id         Int            @id @default(autoincrement())
+  username        String         @db.VarChar(200)
+  email           String         @unique @db.VarChar(200)
+  phone           Int?
+  password        String         @db.VarChar(200)
+  accountStatus   Int            @default(1234567890)
+  isVerified      Boolean        @default(false)
+  subscription_id Int?           @unique
+  subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id])
+  created_at      DateTime       @db.Date
+  updated_at      DateTime       @db.Date
+}
+
+model escorts {
+  escort_id Int    @id @default(autoincrement())
+  email     String @unique @db.VarChar(200)
+  phone     String @db.VarChar(200)
+  username  String @db.VarChar(200)
+}
+
+model client {
+  client_id Int    @id @default(autoincrement())
+  email     String @unique @db.VarChar(200)
+  username  String @db.VarChar(200)
+}
+
+model subscribtions {
+  subscription_id Int    @id @default(autoincrement())
+  months          String @db.VarChar(100)
+  user_id         Int
+  users           users?
+}
