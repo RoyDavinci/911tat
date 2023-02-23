@@ -15,28 +15,57 @@ model users {
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
+  escort_id       Int?           @unique
+  client_id       Int?           @unique
   subscription_id Int?           @unique
+  adminId         Int?           @unique
   subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id])
-  created_at      DateTime       @db.Date
-  updated_at      DateTime       @db.Date
+  clients         client?        @relation(fields: [client_id], references: [client_id])
+  escorts         escorts?       @relation(fields: [escort_id], references: [escort_id])
+  admin           admin?         @relation(fields: [adminId], references: [id])
+  created_at      DateTime       @default(now())
+  updated_at      DateTime?
 }
 
 model escorts {
-  escort_id Int    @id @default(autoincrement())
-  email     String @unique @db.VarChar(200)
-  phone     String @db.VarChar(200)
-  username  String @db.VarChar(200)
+  escort_id  Int       @id @default(autoincrement())
+  email      String    @unique @db.VarChar(200)
+  phone      String    @db.VarChar(200)
+  username   String    @db.VarChar(200)
+  users      users?
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 }
 
 model client {
-  client_id Int    @id @default(autoincrement())
-  email     String @unique @db.VarChar(200)
-  username  String @db.VarChar(200)
+  client_id  Int       @id @default(autoincrement())
+  email      String    @unique @db.VarChar(200)
+  username   String    @db.VarChar(200)
+  users      users?
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 }
 
 model subscribtions {
-  subscription_id Int    @id @default(autoincrement())
-  months          String @db.VarChar(100)
+  subscription_id Int       @id @default(autoincrement())
+  months          String    @db.VarChar(100)
   user_id         Int
   users           users?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime?
+}
+
+model admin {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String
+  users     users?
+  role      Role
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+enum Role {
+  Super_Admin
+  Admin
 }

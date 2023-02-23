@@ -66,3 +66,18 @@ export const optionalAuthenticate = async (req: Request, res: Response, next: Ne
 
     return next();
 };
+
+export const authenticateAdminJWT = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization)
+        return next({statusCode: STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED, message: "admin authorization needed"});
+
+    return passport.authenticate("jwt", (error: Error, user: Express.User, info: {message: string}) => {
+        if (error) return next({statusCode: STATUS_CODES.FORBIDDEN, message: error.message});
+        if (!user) return next({statusCode: STATUS_CODES.NOT_FOUND, message: info.message});
+        if (!user.adminId) return next({statusCode: STATUS_CODES.FORBIDDEN, message: "unauthorized"});
+        return req.logIn(user, err => {
+            if (err) return next({statusCode: STATUS_CODES.FORBIDDEN, message: err.message});
+            return next();
+        });
+    })(req, res, next);
+};
