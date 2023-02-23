@@ -4,6 +4,9 @@ import {prisma} from "../../db/prisma";
 import bcrypt from "bcryptjs";
 import {logger} from "../../utils/logger";
 import {Prisma} from "@prisma/client";
+import {IUser} from "./auth.interfaces";
+import jwt from "jsonwebtoken";
+import {config} from "../../config";
 
 export const registerAsClient = async (req: Request, res: Response) => {
     const {email, password, username} = req.body;
@@ -104,5 +107,25 @@ export const blacklistUser = async (req: Request, res: Response) => {
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
             .json({error: e, message: "an error occured on creating a user"});
+    }
+};
+
+export const login = async (req: Request, res: Response) => {
+    const {user_id, adminId} = req.user as unknown as IUser;
+    try {
+        if (adminId) {
+            const findAdmin = await prisma.users.findUnique({where: {adminId: adminId}});
+            if (!findAdmin) return res.status(400).json({message: "admin not found"});
+            const token = jwt.sign({id: findAdmin.user_id}, config.server.secret);
+            return res.status(200).json({message: "login successful", user: {findAdmin}, token});
+        }
+        const findUser = await prisma.users.findUnique({where: {user_id}});
+        if (!findUser || findUser.client_id || findUser.escort_id)
+            return res.status(400).json({message: "user not found"});
+        const token = jwt.sign({id: findUser.user_id}, config.server.secret);
+        return res.status(200).json({message: "login successful", user: {findUser}, token});
+    } catch (error) {
+        logger.info(error);
+        return res.status(400).json({message: "error on login", error});
     }
 };
