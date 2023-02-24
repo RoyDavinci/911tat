@@ -2,16 +2,16 @@ import {PassportStatic} from "passport";
 import passportLocal from "passport-local";
 import passportJwt from "passport-jwt";
 import bcrypt from "bcryptjs";
-import {config} from "../config";
-import {prisma} from "../db/prisma";
-import {logger} from "../utils/logger";
+import config from "../config";
+import prisma from "../db/prisma";
+import logger from "../utils/logger";
 
 const options = {
     jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config.server.secret,
 };
 
-export const passportService = (passport: PassportStatic) => {
+const passportService = (passport: PassportStatic) => {
     passport.use(
         new passportJwt.Strategy(options, async (payload, done) => {
             const user = await prisma.users.findUnique({
@@ -73,3 +73,5 @@ export const passportService = (passport: PassportStatic) => {
         }
     });
 };
+
+export default passportService;

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {checkHealth} from "./health";
+import checkHealth from "./health";
 
 const healthRouter = Router();
 

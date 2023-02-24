@@ -16,10 +16,12 @@ if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
-export const mailConfig = {
+const mailConfig = {
     mail: {
         MAIL_USERNAME: envVars.MAIL_USERNAME,
         MAIL_PASSWORD: envVars.MAIL_PASSWORD,
         MAIL_SERVICE: envVars.MAIL_SERVICE,
     },
 };
+
+export default mailConfig;

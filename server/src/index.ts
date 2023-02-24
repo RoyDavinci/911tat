@@ -3,17 +3,30 @@ import cors from "cors";
 import helmet from "helmet";
 import http from "http";
 import debug from "debug";
-import sessionInstance from "./common/session";
 import passport from "passport";
-import {passportService} from "./common/passport";
+import {v2 as cloudinary} from "cloudinary";
+import sessionInstance from "./common/session";
+import passportService from "./common/passport";
 import serviceNotFoundHandler from "./common/serviceNotFoundHandler";
 import healthRouter from "./controllers/health/health.service";
 import apiV1Router from "./routes/routes";
-import {logger} from "./utils/logger";
-import {config} from "./config";
-import {v2 as cloudinary} from "cloudinary";
+import logger from "./utils/logger";
+import config from "./config";
+import createSuperAdminOnStartup from "./db/superAdmin";
 
 const app = express();
+
+function normalizePort(val: string) {
+    const ports = parseInt(val, 10);
+    if (Number.isNaN(ports)) {
+        return val;
+    }
+    if (ports >= 0) {
+        // ports number
+        return ports;
+    }
+    return false;
+}
 
 const port = normalizePort(process.env.PORT || "4200");
 
@@ -27,6 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(helmet());
+createSuperAdminOnStartup();
 app.use(sessionInstance);
 passportService(passport);
 app.use(passport.initialize());
@@ -44,24 +58,9 @@ server.listen(port, () => {
     if (config.isDevelopment) logger.info(`server port: http://localhost:${port}`);
 });
 
-server.on("error", onError);
-server.on("listening", onListening);
-
-function normalizePort(val: string) {
-    const port = parseInt(val, 10);
-    if (Number.isNaN(port)) {
-        return val;
-    }
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-    return false;
-}
-
 function onError(error: {syscall: string; code: string}) {
     if (error.syscall !== "listen") {
-        throw error;
+        throw new Error(`{message: ${error.syscall}, code: ${error.code}`);
     }
     const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
     // handle specific listen errors with friendly messages
@@ -80,7 +79,7 @@ function onError(error: {syscall: string; code: string}) {
             break;
         default:
             logger.info("this happened instead");
-            throw error;
+            throw new Error(`{message: ${error.syscall}, code: ${error.code}`);
     }
 }
 
@@ -89,3 +88,6 @@ function onListening() {
     const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
     serverDebugger(`Listening on ${bind}`);
 }
+
+server.on("error", onError);
+server.on("listening", onListening);

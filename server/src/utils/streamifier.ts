@@ -1,8 +1,10 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable import/no-extraneous-dependencies */
 import {UploadApiErrorResponse, UploadApiResponse, UploadStream, v2 as cloudinary} from "cloudinary";
 import streamifier from "streamifier";
-import {logger} from "./logger";
+import logger from "./logger";
 
-export const streamUpload = (req: Buffer): Promise<UploadApiErrorResponse | UploadApiResponse> => {
+const streamUpload = (req: Buffer): Promise<UploadApiErrorResponse | UploadApiResponse> => {
     logger.info("gotten to stream upload");
 
     return new Promise((resolve, reject) => {
@@ -18,3 +20,4 @@ export const streamUpload = (req: Buffer): Promise<UploadApiErrorResponse | Uplo
         return streamifier.createReadStream(req).pipe(stream);
     });
 };
+export default streamUpload;

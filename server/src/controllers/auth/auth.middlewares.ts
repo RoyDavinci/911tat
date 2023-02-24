@@ -1,5 +1,5 @@
 import {check} from "express-validator";
-import {validationErrorHandler} from "../../utils/validationErrorrHandler";
+import validationErrorHandler from "../../utils/validationErrorrHandler";
 
 export const clientCreateValidator = [
     check("username")

@@ -1,5 +1,6 @@
-import {serverConfig} from "./server";
-import {mailConfig} from "./mail";
+import serverConfig from "./server";
+import mailConfig from "./mail";
 import cloudinaryConfig from "./cloudinary";
 
-export const config = {...serverConfig, ...mailConfig, ...cloudinaryConfig};
+const config = {...serverConfig, ...mailConfig, ...cloudinaryConfig};
+export default config;

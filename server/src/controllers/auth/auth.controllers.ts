@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable import/no-extraneous-dependencies */
 import {Request, Response} from "express";
-import HTTP_STATUS_CODE from "../../constants/httpCodes";
-import {prisma} from "../../db/prisma";
 import bcrypt from "bcryptjs";
-import {logger} from "../../utils/logger";
 import {Prisma} from "@prisma/client";
-import {IUser} from "./auth.interfaces";
 import jwt from "jsonwebtoken";
-import {config} from "../../config";
-import {streamUpload} from "../../utils/streamifier";
+import HTTP_STATUS_CODE from "../../constants/httpCodes";
+import prisma from "../../db/prisma";
+import logger from "../../utils/logger";
+import {IUser} from "./auth.interfaces";
+import config from "../../config";
+import streamUpload from "../../utils/streamifier";
 
 export const registerAsClient = async (req: Request, res: Response) => {
     const {email, password, username} = req.body;
@@ -82,8 +84,7 @@ export const registerAsEscort = async (req: Request, res: Response) => {
 
 export const blacklistUser = async (req: Request, res: Response) => {
     const {id} = req.params;
-    if (!req.user) return res.status(400).json({message: "no authenticated user"});
-    const {adminId} = req.user;
+    const {adminId} = req.user as unknown as IUser;
     try {
         const findAdmin = await prisma.users.findFirst({where: {adminId}});
         if (!findAdmin) return res.status(400).json({message: "addmin does not exist"});
@@ -115,7 +116,7 @@ export const login = async (req: Request, res: Response) => {
     const {user_id, adminId} = req.user as unknown as IUser;
     try {
         if (adminId) {
-            const findAdmin = await prisma.users.findUnique({where: {adminId: adminId}});
+            const findAdmin = await prisma.users.findUnique({where: {adminId}});
             if (!findAdmin) return res.status(400).json({message: "admin not found"});
             const token = jwt.sign({id: findAdmin.user_id}, config.server.secret);
             return res.status(200).json({message: "login successful", user: {findAdmin}, token});

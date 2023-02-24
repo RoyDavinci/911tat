@@ -1,41 +1,34 @@
 import {Request, Response, NextFunction} from "express";
 import passport from "passport";
 import STATUS_CODES from "../constants/httpCodes";
-import {logger} from "../utils/logger";
 
-export const authenticateLocal = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateLocal = (req: Request, res: Response, next: NextFunction) => {
     try {
         return passport.authenticate("local", (error: Error, user: Express.User, info: {message: string}) => {
-            logger.info("na here e dey");
-            if (error) return res.status(400).json({message: info.message, error: error.message, err: "has error"});
-            logger.info(error);
-            if (!user) {
-                logger.info(user);
+            if (error) return res.status(400).json({message: info.message, error: error.message});
 
-                return res.status(400).json({message: info.message, err: "no user"});
+            if (!user) {
+                return res.status(400).json({message: info.message});
             }
 
             return req.logIn(user, err => {
-                if (err)
-                    return res.status(400).json({message: info.message, error: err.message, err: "error on login"});
+                if (err) return res.status(400).json({message: info.message, error: err.message});
 
                 return next();
             });
         })(req, res, next);
     } catch (error) {
-        logger.error(error);
-
         return res.status(STATUS_CODES.NOT_ACCEPTABLE).json({message: "wrong username/password", error});
     }
 };
 
-export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization)
         return res.status(STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED).json({message: "header token needed"});
 
     return passport.authenticate("jwt", (error: Error, user: Express.User) => {
         if (error) {
-            return res.status(STATUS_CODES.FORBIDDEN).json({message: error.message, data: "error"});
+            return res.status(STATUS_CODES.FORBIDDEN).json({message: error.message});
         }
         if (!user) return res.status(STATUS_CODES.NOT_FOUND).json({message: "user does not exist ooh"});
 
@@ -47,11 +40,10 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
     })(req, res, next);
 };
 
-export const optionalAuthenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const optionalAuthenticate = (req: Request, res: Response, next: NextFunction) => {
     if (req.headers.authorization) {
         return passport.authenticate("jwt", (error: Error, user: Express.User, info: {message: string}) => {
-            if (error)
-                return res.status(STATUS_CODES.INSUFFICIENT_STORAGE).json({message: error.message, data: "error"});
+            if (error) return res.status(STATUS_CODES.INSUFFICIENT_STORAGE).json({message: error.message});
             if (!user) return res.status(STATUS_CODES.INSUFFICIENT_STORAGE).json({message: info.message});
 
             return req.logIn(user, err => {
@@ -65,16 +57,18 @@ export const optionalAuthenticate = async (req: Request, res: Response, next: Ne
     return next();
 };
 
-export const authenticateAdminJWT = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateAdminJWT = (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization)
-        return next({statusCode: STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED, message: "admin authorization needed"});
+        return res
+            .status(STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED)
+            .json({message: "admin authentication token needed"});
 
     return passport.authenticate("jwt", (error: Error, user: Express.User, info: {message: string}) => {
-        if (error) return next({statusCode: STATUS_CODES.FORBIDDEN, message: error.message});
-        if (!user) return next({statusCode: STATUS_CODES.NOT_FOUND, message: info.message});
-        if (!user.adminId) return next({statusCode: STATUS_CODES.FORBIDDEN, message: "unauthorized"});
+        if (error) return res.status(STATUS_CODES.FORBIDDEN).json({message: error.message, err: info.message});
+        if (!user) return res.status(STATUS_CODES.NOT_FOUND).json({message: "user does not exist ooh"});
+        if (!user.adminId) return res.status(STATUS_CODES.FORBIDDEN).json({message: "user not authorized"});
         return req.logIn(user, err => {
-            if (err) return next({statusCode: STATUS_CODES.FORBIDDEN, message: err.message});
+            if (err) return res.status(STATUS_CODES.FORBIDDEN).json({message: err.message});
             return next();
         });
     })(req, res, next);
