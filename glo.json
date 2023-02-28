@@ -1,0 +1,164 @@
+{
+	"bundle": [
+		{
+			"network": "GLO",
+			"category": "Daily",
+			"price": "50.00",
+			"allowance": "50MB",
+			"product_id": "18",
+			"validity": "1 Day"
+		},
+		{
+			"network": "GLO",
+			"category": "Daily",
+			"price": "100.00",
+			"allowance": "150MB",
+			"product_id": "GD3",
+			"validity": "1 Day"
+		},
+		{
+			"network": "GLO",
+			"category": "Daily",
+			"price": "200.00",
+			"allowance": "350MB",
+			"product_id": "28",
+			"validity": "2 Day"
+		},
+		{
+			"network": "GLO",
+			"category": "Daily",
+			"price": "500.00",
+			"allowance": "1.8GB",
+			"product_id": "GD5",
+			"validity": "14 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "1000.00",
+			"allowance": "2.5GB",
+			"product_id": "GD6",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "2000.00",
+			"allowance": "5.8GB",
+			"product_id": "GD7",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "2500.00",
+			"allowance": "7.7GB",
+			"product_id": "GD8",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "4000.00",
+			"allowance": "13.25GB",
+			"product_id": "GL1",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "5000.00",
+			"allowance": "18.25GB",
+			"product_id": "GL2",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "8000.00",
+			"allowance": "29.5GB",
+			"product_id": "GL3",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "10000.00",
+			"allowance": "50GB",
+			"product_id": "GL4",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "15000.00",
+			"allowance": "93GB",
+			"product_id": "GL5",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "18000.00",
+			"allowance": "119GB",
+			"product_id": "GL6",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "20000.00",
+			"allowance": "138GB",
+			"product_id": "GL7",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Night",
+			"price": "50.00",
+			"allowance": "500MB",
+			"product_id": "GL9",
+			"validity": "1 Day"
+		},
+		{
+			"network": "GLO",
+			"category": "Night",
+			"price": "100.00",
+			"allowance": "1GB",
+			"product_id": "GO1",
+			"validity": "5 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Special",
+			"price": "1500.00",
+			"allowance": "7GB",
+			"product_id": "GO2",
+			"validity": "7 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "3000.00",
+			"allowance": "10GB",
+			"product_id": "GDD1",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Monthly",
+			"price": "1500.00",
+			"allowance": "4.1GB",
+			"product_id": "GX1",
+			"validity": "30 Days"
+		},
+		{
+			"network": "GLO",
+			"category": "Daily",
+			"price": "200.00",
+			"allowance": "1.25GB",
+			"product_id": "GL01",
+			"validity": "1 day"
+		}
+	]
+}
