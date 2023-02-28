@@ -1,0 +1,20 @@
+.featuredEscortContainer,
+.otherEscortContainer {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+	position: relative;
+}
+.otherEscortContainer .escort__itemContainer div {
+	position: absolute;
+	border: 2px solid #ccc;
+	border-radius: 50%;
+	top: 30px;
+	width: 50px;
+	height: 50px;
+	/* left: 100; */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url("../../assets//react.svg");
+}
