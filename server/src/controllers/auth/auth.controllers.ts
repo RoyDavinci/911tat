@@ -16,7 +16,8 @@ export const registerAsClient = async (req: Request, res: Response) => {
 
     try {
         const findUser = await prisma.users.findUnique({where: {email}});
-        if (findUser) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({message: "user already exists"});
+        if (findUser)
+            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({message: "user already exists", success: false});
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const createClient = await prisma.client.create({data: {email, username}});
@@ -26,6 +27,7 @@ export const registerAsClient = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: "user created",
             user: {id: newUser.user_id, username: newUser.username, email: newUser.email},
+            success: true,
         });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -35,15 +37,16 @@ export const registerAsClient = async (req: Request, res: Response) => {
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
                 });
             }
             logger.info(e);
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
         }
         logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
-            .json({error: e, message: "an error occured on creating a user"});
+            .json({error: e, message: "an error occured on creating a user", success: false});
     }
 };
 
@@ -51,7 +54,8 @@ export const registerAsEscort = async (req: Request, res: Response) => {
     const {phone, email, username, password} = req.body;
     try {
         const findUser = await prisma.users.findUnique({where: {email}});
-        if (findUser) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({message: "user already exists"});
+        if (findUser)
+            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({message: "user already exists", success: false});
         const hashedPassword = await bcrypt.hash(password, 10);
         const createEscort = await prisma.escorts.create({data: {email, username, phone}});
         const newUser = await prisma.users.create({
@@ -61,6 +65,7 @@ export const registerAsEscort = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: "user created",
             user: {id: newUser.user_id, username: newUser.username, email: newUser.email, phone: newUser.phone},
+            success: true,
         });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -70,15 +75,16 @@ export const registerAsEscort = async (req: Request, res: Response) => {
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
                 });
             }
             logger.info(e);
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
         }
         logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
-            .json({error: e, message: "an error occured on creating a user"});
+            .json({error: e, message: "an error occured on creating a user", success: false});
     }
 };
 
@@ -87,11 +93,11 @@ export const blacklistUser = async (req: Request, res: Response) => {
     const {adminId} = req.user as unknown as IUser;
     try {
         const findAdmin = await prisma.users.findFirst({where: {adminId}});
-        if (!findAdmin) return res.status(400).json({message: "addmin does not exist"});
+        if (!findAdmin) return res.status(400).json({message: "addmin does not exist", success: false});
         const findUser = await prisma.users.findUnique({where: {user_id: Number(id)}});
-        if (!findUser) return res.status(400).json({message: "user not found"});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
         await prisma.users.update({where: {user_id: Number(id)}, data: {accountStatus: 123456789}});
-        return res.status(400).json({message: "user banned"});
+        return res.status(400).json({message: "user banned", success: true});
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner
@@ -100,15 +106,16 @@ export const blacklistUser = async (req: Request, res: Response) => {
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
                 return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
                     message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
                 });
             }
             logger.info(e);
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e});
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
         }
         logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
-            .json({error: e, message: "an error occured on creating a user"});
+            .json({error: e, message: "an error occured on creating a user", success: false});
     }
 };
 
@@ -119,16 +126,16 @@ export const login = async (req: Request, res: Response) => {
             const findAdmin = await prisma.users.findUnique({where: {adminId}});
             if (!findAdmin) return res.status(400).json({message: "admin not found"});
             const token = jwt.sign({id: findAdmin.user_id}, config.server.secret);
-            return res.status(200).json({message: "login successful", user: {findAdmin}, token});
+            return res.status(200).json({message: "login successful", success: true, user: {findAdmin}, token});
         }
         const findUser = await prisma.users.findUnique({where: {user_id}});
 
         if (!findUser) return res.status(400).json({message: "user not found"});
         const token = jwt.sign({id: findUser.user_id}, config.server.secret);
-        return res.status(200).json({message: "login successful", user: {findUser}, token});
+        return res.status(200).json({message: "login successful", success: true, user: findUser, token});
     } catch (error) {
         logger.info(error);
-        return res.status(400).json({message: "error on login", error});
+        return res.status(400).json({message: "error on login", error, success: false});
     }
 };
 
@@ -137,17 +144,19 @@ export const updateProfileImage = async (req: Request, res: Response) => {
 
     try {
         const findUser = await prisma.users.findUnique({where: {user_id}});
-        if (!findUser) return res.status(400).json({message: "user not found"});
-        if (!req.file) return res.status(400).json({message: "file needed"});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
+        if (!req.file) return res.status(400).json({message: "file needed", success: false});
         const data = await streamUpload(req.file.buffer);
-        if (data.message) return res.status(data.http_code).json({message: "an error occured", err: data.message});
+        if (data.message)
+            return res.status(data.http_code).json({message: "an error occured", err: data.message, success: false});
         await prisma.users.update({where: {user_id}, data: {profilePhoto: data.secure_url}});
         return res.status(200).json({
             message: "photo updated",
             user: {id: findUser.user_id, email: findUser.email, profilePicture: data.secure_url},
+            success: true,
         });
     } catch (error) {
         logger.info(error);
-        return res.status(200).json({message: "an error occured on photo change", error});
+        return res.status(200).json({message: "an error occured on photo change", error, success: false});
     }
 };
