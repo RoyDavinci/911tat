@@ -45,7 +45,7 @@ export const data = [
 		title: "accusamus ea ",
 		url: "https://via.placeholder.com/600/56a8c2",
 		thumbnailUrl: "https://via.placeholder.com/150/56a8c2",
-		verified: false,
+		verified: true,
 	},
 	{
 		albumId: 1,
@@ -53,7 +53,7 @@ export const data = [
 		title: "officia delectus",
 		url: "https://via.placeholder.com/600/b0f7cc",
 		thumbnailUrl: "https://via.placeholder.com/150/b0f7cc",
-		verified: false,
+		verified: true,
 	},
 	{
 		albumId: 1,
@@ -61,7 +61,7 @@ export const data = [
 		title: "aut porro ",
 		url: "https://via.placeholder.com/600/54176f",
 		thumbnailUrl: "https://via.placeholder.com/150/54176f",
-		verified: false,
+		verified: true,
 	},
 	{
 		albumId: 1,
@@ -69,7 +69,7 @@ export const data = [
 		title: "qui eius qui",
 		url: "https://via.placeholder.com/600/51aa97",
 		thumbnailUrl: "https://via.placeholder.com/150/51aa97",
-		verified: false,
+		verified: true,
 	},
 	{
 		albumId: 1,

@@ -3,15 +3,8 @@ import "./escort.css";
 import { data } from "../../helpers/data";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-
-export interface verified {
-	albumId: number;
-	id: number;
-	title: string;
-	url: string;
-	thumbnailUrl: string;
-	verified: boolean;
-}
+import { Link } from "react-router-dom";
+import { verified } from "../../interfaces/user";
 
 export const Escort = () => {
 	const [verifiedInfo, setVerifiedInfo] = useState<verified[]>([]);
@@ -19,47 +12,51 @@ export const Escort = () => {
 
 	useEffect(() => {
 		const setData = () => {
-			for (let item = 0; item < data.length; item++) {}
-			data.map((item) => {
-				if (item.verified) {
-					setVerifiedInfo((prev) => [...prev, item]);
+			let verifiedArray: verified[] = [];
+			let unverifiedArray: verified[] = [];
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].verified) {
+					verifiedArray.push(data[i]);
 				} else {
-					setUnVerifiedInfo((prev) => [...prev, item]);
+					unverifiedArray.push(data[i]);
 				}
-			});
+			}
+			setVerifiedInfo(verifiedArray);
+			setUnVerifiedInfo(unverifiedArray);
 		};
+
 		setData();
 		return () => {
 			console.log("data cleared");
 		};
 	}, []);
 
-	console.log(verifiedInfo, unVerifiedInfo);
-
 	return (
-		<div>
+		<div className='escort__container'>
 			<div className='featuredEscortContainer'>
-				<Carousel infiniteLoop>
-					{verifiedInfo.map((item, index) => {
-						return (
-							<div key={index}>
-								<div className='escort__itemContainer'>
+				{verifiedInfo.map((item, index) => {
+					return (
+						<div key={index} className='escort__itemContainer'>
+							<Link to={`/${item.id}`}>
+								<div>
 									<img src={item.url} alt='' />
 									<p>{item.title}</p>
 									<div></div>
 								</div>
-							</div>
-						);
-					})}
-				</Carousel>
+							</Link>
+						</div>
+					);
+				})}
 			</div>
 			<div className='otherEscortContainer'>
 				{unVerifiedInfo.map((item, index) => {
 					return (
 						<div key={index} className='escort__itemContainer'>
-							<img src={item.url} alt='' />
-							<p>{item.title}</p>
-							<div></div>
+							<Link to={`/${item.id}`}>
+								<img src={item.url} alt='' />
+								<p>{item.title}</p>
+								<div></div>
+							</Link>
 						</div>
 					);
 				})}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Hero, Escort } from "../../components";
+import { Header, Hero, Escort, Footer } from "../../components";
 
 export const Home = () => {
 	return (
@@ -7,6 +7,7 @@ export const Home = () => {
 			<Header />
 			<Hero />
 			<Escort />
+			<Footer />
 		</div>
 	);
 };

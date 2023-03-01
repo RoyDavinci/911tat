@@ -1,20 +1,49 @@
-.featuredEscortContainer,
+.escort__container {
+	/* max-width: 1080px; */
+	display: flex;
+	flex-direction: column;
+	margin: 25px 0px;
+	padding: 0 60px;
+	align-items: center;
+	justify-content: center;
+}
+
 .otherEscortContainer {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 	gap: 20px;
 	position: relative;
+	width: 100%;
 }
-.otherEscortContainer .escort__itemContainer div {
-	position: absolute;
-	border: 2px solid #ccc;
-	border-radius: 50%;
-	top: 30px;
-	width: 50px;
-	height: 50px;
-	/* left: 100; */
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-image: url("../../assets//react.svg");
+
+.featuredEscortContainer {
+	display: flex;
+	flex-wrap: nowrap;
+	white-space: nowrap;
+	overflow-x: auto;
+	gap: 20px;
+	margin: 40px 0px;
 }
+.featuredEscortContainer .escort__itemContainer {
+	flex: 1 1 auto;
+	height: 500px;
+	width: 30%;
+	flex-shrink: 0;
+}
+.featuredEscortContainer .escort__itemContainer img {
+	object-fit: contain;
+}
+.featuredEscortContainer .escort__itemContainer:first-child {
+	margin-left: auto;
+}
+
+.featuredEscortContainer .escort__itemContainer:last-child {
+	margin-right: auto;
+}
+
+/* @media (min-width: 900px) {
+	.featuredEscortContainer .escort__itemContainer {
+		height: 500px;
+		width: 30%;
+	}
+} */

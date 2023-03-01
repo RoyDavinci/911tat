@@ -1,0 +1,21 @@
+.footer__container {
+	padding: 15px 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #6c62ff;
+}
+.footer__container div {
+	display: flex;
+	align-items: center;
+}
+.footer__container div h2,
+.footer__container div button {
+	margin: 0px 10px;
+}
+.footer__container div button {
+	border: 1px solid #ccc;
+	color: white;
+	padding: 10px 15px;
+	border-radius: 5px;
+}
