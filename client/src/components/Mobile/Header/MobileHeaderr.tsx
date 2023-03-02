@@ -14,7 +14,6 @@ export const MobileHeader = () => {
 		}
 		userDetail && setUser(JSON.parse(userDetail));
 	}, []);
-	console.log(user);
 
 	return (
 		<header className='mobile__headerContainer'>
@@ -34,11 +33,13 @@ export const MobileHeader = () => {
 				</div>
 				<div>
 					<i className='fa-solid fa-magnifying-glass mx-3'></i>
-					<img
-						src={user?.profilePhoto ? user.profilePhoto : defaultImage}
-						className='mr-3 h-6 sm:h-9'
-						alt='user image'
-					/>
+					<div className='header__useImage rounded-full'>
+						<img
+							src={user?.profilePhoto ? user.profilePhoto : defaultImage}
+							className='mr-3  '
+							alt='user image'
+						/>
+					</div>
 					<i className='fa-solid fa-plus plus-add mx-3'></i>
 				</div>
 			</nav>

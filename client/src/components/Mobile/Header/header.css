@@ -19,3 +19,12 @@
 	background-color: #c266c2;
 	border-radius: 5px;
 }
+.header__useImage {
+	width: 50px;
+	height: 40px;
+	border-radius: 50%;
+}
+.header__useImage img {
+	object-fit: cover;
+	border-radius: 50%;
+}

@@ -1,0 +1,33 @@
+.form__updateImageContainer img {
+	width: 50%;
+	height: 200px;
+}
+.update__userContainer button {
+	padding: 10px;
+	color: white;
+	background-color: #c266c2;
+	border-radius: 5px;
+}
+.user_form__container {
+	margin: 10px 0px;
+}
+.user_form__container label,
+.user_form__container input,
+.authForm__container label,
+.authForm__container input {
+	display: block;
+}
+.user_form__container input,
+.authForm__container input {
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.5);
+	margin: 10px 0px;
+	padding: 10px;
+	font-size: 20px;
+	width: 70%;
+}
+.user_form__container button,
+.authForm__container button {
+	width: 80%;
+	margin: 10px 0px;
+}

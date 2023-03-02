@@ -15,6 +15,7 @@ export interface IUser {
 	created_at: Date;
 	updated_at: Date | null;
 	profilePhoto: string | null;
+	token: string | null;
 }
 export interface payloadResponse {
 	success: boolean;

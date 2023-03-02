@@ -12,4 +12,5 @@ userRouter.post("/login", authenticateLocal, controllers.login);
 userRouter.patch("/upload-profile-photo", authenticateJWT, uploadSingle, controllers.updateProfileImage);
 userRouter.post("/blaclkist/:id", authenticateAdminJWT, controllers.blacklistUser);
 
+// eslint-disable-next-line import/prefer-default-export
 export {userRouter};
