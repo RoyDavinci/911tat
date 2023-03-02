@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { IUser } from "../../../interfaces/userinterfaces";
 import "./header.css";
 import defaultImage from "../../../assets/icons8-user-64.png";
+import { Aside } from "../Aside/Aside";
 
 export const MobileHeader = () => {
 	const [user, setUser] = useState<IUser>();
+	const [showSidebar, setShowSidebar] = useState(false);
 
 	useEffect(() => {
 		const userDetail = localStorage.getItem("user");
@@ -19,7 +21,18 @@ export const MobileHeader = () => {
 		<header className='mobile__headerContainer'>
 			<nav>
 				<div>
-					<i className='fa-solid fa-bars mx-3 menu-bar'></i>
+					{showSidebar ? (
+						<i
+							className='fa-solid fa-xmark mx-3 menu-bar'
+							onClick={() => setShowSidebar(!showSidebar)}
+						></i>
+					) : (
+						<i
+							className='fa-solid fa-bars mx-3 menu-bar'
+							onClick={() => setShowSidebar(!showSidebar)}
+						></i>
+					)}
+
 					<a href='https://flowbite.com' className='flex items-center'>
 						<img
 							src='https://flowbite.com/docs/images/logo.svg'
@@ -43,6 +56,11 @@ export const MobileHeader = () => {
 					<i className='fa-solid fa-plus plus-add mx-3'></i>
 				</div>
 			</nav>
+			{showSidebar && (
+				<div className='aside'>
+					<Aside />
+				</div>
+			)}
 		</header>
 	);
 };

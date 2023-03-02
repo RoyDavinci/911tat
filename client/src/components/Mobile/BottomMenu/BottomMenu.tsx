@@ -28,7 +28,7 @@ export const BottomMenu = () => {
 							<p>Favourite</p>
 						</div>
 					</Link>
-					<Link to='/settings' className='bloc-icon'>
+					<Link to='/dashboard' className='bloc-icon'>
 						<div>
 							<i className='fa-solid fa-user'></i>
 							<p>Account</p>

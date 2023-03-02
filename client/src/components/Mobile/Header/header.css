@@ -28,3 +28,7 @@
 	object-fit: cover;
 	border-radius: 50%;
 }
+.aside {
+	position: absolute;
+	overflow-y: scroll;
+}

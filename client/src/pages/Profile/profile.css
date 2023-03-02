@@ -18,6 +18,20 @@
 	.profile__detailContainer {
 		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	}
+	.mobileContainerr {
+		display: none;
+	}
+	.desktop__container {
+		display: block;
+	}
+}
+@media (max-width: 899px) {
+	.mobileContainerr {
+		display: block;
+	}
+	.desktop__container {
+		display: none;
+	}
 }
 .profile__Container {
 	padding: 10px;
