@@ -1,0 +1,21 @@
+.mobile__headerContainer nav,
+.mobile__headerContainer nav div {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.mobile__headerContainer nav {
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+.menu-bar {
+	padding: 8px 12px;
+	background-color: #373737;
+	font-size: 20px;
+	border-radius: 5px;
+}
+.plus-add {
+	padding: 8px 13px;
+	background-color: #c266c2;
+	border-radius: 5px;
+}

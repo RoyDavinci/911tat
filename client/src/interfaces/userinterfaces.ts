@@ -18,7 +18,7 @@ export interface IUser {
 export interface payloadResponse {
 	success: boolean;
 	token: string;
-	data: { user: IUser };
+	user: IUser;
 }
 
 export interface payloadErrorResponse {
@@ -29,7 +29,7 @@ export interface payloadErrorResponse {
 }
 
 export type userInfo = {
-	email: string;
+	username: string;
 	password: string;
 };
 

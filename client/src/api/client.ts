@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 
-const BASE_URL = "http://localhost:3650/api/v1/";
+const BASE_URL = "http://localhost:2900/api/v1/";
 
 const TOKEN = localStorage.getItem("token");
 

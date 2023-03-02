@@ -10,10 +10,11 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginAdmin } from "../../features/auth/login";
 import logging from "../../helpers/logging";
 import axios from "axios";
+import { IUser, payloadResponse } from "../../interfaces/userinterfaces";
 
 export const Login = () => {
 	const [userDetail, setUserDetail] = useState({ email: "", password: "" });
-	const [error, setError] = useState<string>();
+	const [errors, setError] = useState<string>();
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -21,7 +22,7 @@ export const Login = () => {
 		setUserDetail({ ...userDetail, [name]: value });
 	};
 
-	const { data, status } = useAppSelector((state) => state.auth);
+	const { data, status, error } = useAppSelector((state) => state.auth);
 
 	const dispatch = useAppDispatch();
 
@@ -31,16 +32,26 @@ export const Login = () => {
 		e.preventDefault();
 		try {
 			e.preventDefault();
-			const { data } = await axios.post(
-				"http://localhost:2900/api/v1/user/login",
-				{ username: userDetail.email, password: userDetail.password }
-			);
-			console.log(data);
+			if (status === "idle") {
+				dispatch(
+					loginAdmin({
+						username: userDetail.email,
+						password: userDetail.password,
+					})
+				);
+			}
+			if (status === "successful") {
+			}
+			if (status === "failed") {
+				setError("Invalid username or password");
+			}
 		} catch (error) {
 			const err = error as string;
 			logging.info(err);
+			setError(err);
 		}
 	};
+	console.log(status);
 
 	useEffect(() => {
 		const userState = localStorage.getItem("user");
@@ -71,10 +82,8 @@ export const Login = () => {
 								action='#'
 								onSubmit={handleSubmit}
 							>
-								{error && (
-									<div className='text-red-600 bg-white text-center rounded p-2	w-full'>
-										<small>{error && error}</small>
-									</div>
+								{status === "failed" && (
+									<p className='failed-message'>Email or Password Incorrect</p>
 								)}
 
 								<div>

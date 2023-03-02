@@ -13,22 +13,20 @@ const initialState: UserState = {
 	data: {
 		success: false,
 		token: "",
-		data: {
-			user: {
-				user_id: 0,
-				email: "",
-				password: "",
-				username: "",
-				accountStatus: 0,
-				isVerified: false,
-				phone: "",
-				escort_id: null,
-				created_at: new Date(),
-				updated_at: null,
-				client_id: null,
-				subscription_id: null,
-				adminId: null,
-			},
+		user: {
+			user_id: 0,
+			email: "",
+			password: "",
+			username: "",
+			accountStatus: 0,
+			isVerified: false,
+			phone: "",
+			escort_id: null,
+			created_at: new Date(),
+			updated_at: null,
+			client_id: null,
+			subscription_id: null,
+			adminId: null,
 		},
 	},
 	error: {},
@@ -39,6 +37,7 @@ export const loginAdmin = createAsyncThunk(
 	async (item: userInfo, thunkAPI) => {
 		try {
 			const { data } = await publicRequest.post("/user/login", item);
+			console.log(data);
 			return data;
 		} catch (error) {
 			const err = error as AxiosError<payloadErrorResponse>;
@@ -77,7 +76,7 @@ export const authSlice = createSlice({
 			state.data = action.payload;
 			state.status = "successful";
 			localStorage.setItem("token", state.data.token);
-			localStorage.setItem("user", JSON.stringify(state.data.data.user));
+			localStorage.setItem("user", JSON.stringify(state.data.user));
 		});
 		builder.addCase(loginAdmin.rejected, (state, action) => {
 			state.error = action.error;
