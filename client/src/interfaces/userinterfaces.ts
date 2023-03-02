@@ -14,6 +14,7 @@ export interface IUser {
 	adminId: number | null;
 	created_at: Date;
 	updated_at: Date | null;
+	profilePhoto: string | null;
 }
 export interface payloadResponse {
 	success: boolean;

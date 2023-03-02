@@ -1,0 +1,25 @@
+.profileHeader__container {
+	margin: 10px 0px;
+	position: relative;
+}
+
+.profileHeader__container h1 {
+	font-size: 1.4em;
+	margin: 4px 0px;
+}
+.profileHeader__img__container {
+	margin-right: 10px;
+	position: relative;
+}
+
+.profileHeader__img__container img {
+	border-radius: 50%;
+	border: 1px solid #ccc;
+	margin-right: 10px;
+	height: 80px;
+}
+.icon--image {
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+}

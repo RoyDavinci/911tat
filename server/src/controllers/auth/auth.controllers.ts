@@ -149,10 +149,10 @@ export const updateProfileImage = async (req: Request, res: Response) => {
         const data = await streamUpload(req.file.buffer);
         if (data.message)
             return res.status(data.http_code).json({message: "an error occured", err: data.message, success: false});
-        await prisma.users.update({where: {user_id}, data: {profilePhoto: data.secure_url}});
+        const user = await prisma.users.update({where: {user_id}, data: {profilePhoto: data.secure_url}});
         return res.status(200).json({
             message: "photo updated",
-            user: {id: findUser.user_id, email: findUser.email, profilePicture: data.secure_url},
+            user,
             success: true,
         });
     } catch (error) {
