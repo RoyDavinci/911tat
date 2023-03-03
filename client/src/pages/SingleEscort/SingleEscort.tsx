@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import { verified } from "../../interfaces/user";
 import { useParams } from "react-router-dom";
 import "./singleEscort.css";
-import { data } from "../../helpers/data";
+import { items } from "../../helpers/data";
+import { useAppDispatch } from "../../app/hooks";
+import { addToCart } from "../../features/cart/cart";
 
 export const SingleEscort = () => {
-	const [escort, setEscort] = useState<verified[]>([]);
+	const [escort, setEscort] = useState<verified>();
+	const dispatch = useAppDispatch();
 
 	const { id } = useParams();
 	console.log(id);
 
 	useEffect(() => {
 		const getElement = () => {
-			const items = data.filter((item) => item.id === Number(id));
-			setEscort(items);
+			const itemData = items.find((item) => item.id === Number(id));
+			setEscort(itemData);
+			dispatch(addToCart(itemData));
 		};
 		getElement();
 	}, [id]);

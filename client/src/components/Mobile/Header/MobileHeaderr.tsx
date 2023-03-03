@@ -57,7 +57,7 @@ export const MobileHeader = () => {
 				</div>
 			</nav>
 			{showSidebar && (
-				<div className='aside'>
+				<div className='aside w-64 z-10'>
 					<Aside />
 				</div>
 			)}

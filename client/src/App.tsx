@@ -1,7 +1,15 @@
 import { useState } from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Login, Profile, SignUp, SingleEscort, Update } from "./pages";
+import {
+	Home,
+	Login,
+	Main,
+	Profile,
+	SignUp,
+	SingleEscort,
+	Update,
+} from "./pages";
 
 function App() {
 	const router = createBrowserRouter([
@@ -22,8 +30,14 @@ function App() {
 			path: "/login",
 		},
 		{
-			element: <Profile />,
+			element: <Main />,
 			path: "/dashboard",
+			children: [
+				{
+					element: <Profile />,
+					path: "profile",
+				},
+			],
 		},
 		{
 			element: <Update />,
