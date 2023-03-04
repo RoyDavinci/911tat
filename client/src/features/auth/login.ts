@@ -27,6 +27,8 @@ const initialState: UserState = {
 			client_id: null,
 			subscription_id: null,
 			adminId: null,
+			profilePhoto: "",
+			token: "",
 		},
 	},
 	error: {},
