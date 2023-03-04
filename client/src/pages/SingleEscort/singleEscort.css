@@ -321,9 +321,8 @@
 	line-height: 19px;
 	color: rgba(255, 255, 255, 0.85);
 	text-align: center;
-	padding: 6px;
+	padding: 4px;
 	width: 32px;
-	height: 32px;
 	transition: 0.2s;
 	border-radius: 6px;
 	background: rgba(0, 0, 0, 0.2);
