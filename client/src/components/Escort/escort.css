@@ -38,15 +38,22 @@
 		height: 180px;
 	}
 }
-.products#premium-items .escort__itemContainer .img-wrap {
-	height: 240px;
-	padding: 0;
+@media (min-width: 899px) {
+	.escort__itemContainer .img-wrap {
+		height: 350px;
+		padding: 0;
+	}
+}
+@media (min-width: 899px) {
+	.escort__itemContainer .img-wrap {
+		height: 240px;
+		padding: 0;
+	}
 }
 .escort__itemContainer .img-wrap {
 	position: relative;
 	width: 100%;
 	padding-top: 75%;
-	height: 300px;
 }
 
 @media screen and (max-width: 767px) {
