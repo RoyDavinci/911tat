@@ -40,13 +40,13 @@
 }
 @media (min-width: 899px) {
 	.escort__itemContainer .img-wrap {
-		height: 350px;
+		height: 240px;
 		padding: 0;
 	}
 }
 @media (min-width: 899px) {
 	.escort__itemContainer .img-wrap {
-		height: 240px;
+		height: 140px;
 		padding: 0;
 	}
 }
@@ -113,9 +113,8 @@
 	line-height: 19px;
 	color: rgba(255, 255, 255, 0.85);
 	text-align: center;
-	padding: 6px;
+	padding: 4px;
 	width: 32px;
-	height: 32px;
 	transition: 0.2s;
 	border-radius: 6px;
 	background: rgba(0, 0, 0, 0.2);
@@ -176,7 +175,7 @@
 	left: 0;
 	width: 100%;
 	border-radius: 6px;
-	padding: 38px 36px 8px 8px;
+	padding: 30px 30px 8px 8px;
 	color: #fff;
 	font-weight: 600;
 	background: linear-gradient(

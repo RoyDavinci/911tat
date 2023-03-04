@@ -252,7 +252,7 @@ export const SingleEscort = () => {
 						</div>
 					</div>
 				</div>
-				{data.length > 0 && (
+				{data.length > 3 && (
 					<section className='home__recentlyViewed'>
 						<div className='home__latestContainer'>
 							<div id='recent-ads' className='home__blockContainer onhome'>
@@ -303,7 +303,7 @@ export const SingleEscort = () => {
 						</div>
 					</section>
 				)}
-				{data.length > 0 && (
+				{data.length > 3 && (
 					<section className='home__recentlyViewed'>
 						<div className='home__latestContainer'>
 							<div id='recent-ads' className='home__blockContainer onhome'>
