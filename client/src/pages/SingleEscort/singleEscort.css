@@ -220,20 +220,7 @@
 #item-side #protection .point .icon {
 	color: #f853da;
 }
-#item-side #protection .point .icon:after {
-	content: "";
-	width: 53px;
-	height: 2px;
-	background-color: #d02bb2;
-	z-index: 2;
-	position: absolute;
-	left: -5px;
-	bottom: 15px;
-	transform: rotate(-45deg);
-	transform-origin: 3px 3px;
-	border-radius: 6px;
-	box-shadow: 0 0 0px 1px #fff;
-}
+
 #item-side .report-button {
 	color: #404040;
 	font-weight: normal;

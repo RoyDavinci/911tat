@@ -11,6 +11,8 @@ userRouter.post("/register-as-client", middlewares.clientCreateValidator, contro
 userRouter.post("/login", authenticateLocal, controllers.login);
 userRouter.patch("/upload-profile-photo", authenticateJWT, uploadSingle, controllers.updateProfileImage);
 userRouter.post("/blaclkist/:id", authenticateAdminJWT, controllers.blacklistUser);
+userRouter.patch("/update-escort-profile", authenticateJWT, controllers.updateProfileDetails);
+userRouter.patch("/update-images", authenticateJWT, controllers.uploadImages);
 
 // eslint-disable-next-line import/prefer-default-export
 export {userRouter};

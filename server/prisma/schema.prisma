@@ -24,18 +24,34 @@ model users {
   clients         client?        @relation(fields: [client_id], references: [client_id])
   escorts         escorts?       @relation(fields: [escort_id], references: [escort_id])
   admin           admin?         @relation(fields: [adminId], references: [id])
+  Images          Images[]
   created_at      DateTime       @default(now())
   updated_at      DateTime?
 }
 
 model escorts {
-  escort_id  Int       @id @default(autoincrement())
-  email      String    @unique @db.VarChar(200)
-  phone      String    @db.VarChar(200)
-  username   String    @db.VarChar(200)
-  users      users?
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  escort_id     Int       @id @default(autoincrement())
+  email         String    @unique @db.VarChar(200)
+  phone         String    @db.VarChar(200)
+  username      String    @db.VarChar(200)
+  city          String?   @db.VarChar(50)
+  state         String?   @db.VarChar(50)
+  country       String?   @db.VarChar(50)
+  build         String?   @db.VarChar(20)
+  height        String?   @db.VarChar(20)
+  BustSize      String?   @db.VarChar(20)
+  orientation   String?   @db.VarChar(20)
+  anal          String?   @db.VarChar(20)
+  oralSex       String?   @db.VarChar(20)
+  condom        String?   @db.VarChar(20)
+  smoke         String?   @db.VarChar(10)
+  ethnicity     String?   @default("Black") @db.VarChar(10)
+  age           String?   @db.VarChar(5)
+  shortTimeRate String?   @db.VarChar(10)
+  overNightRate String?   @db.VarChar(10)
+  users         users?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime?
 }
 
 model client {
@@ -64,6 +80,16 @@ model admin {
   role      Role
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+}
+
+model Images {
+  imageId      Int       @id @default(autoincrement())
+  images       String?   @db.VarChar(200)
+  profileImage String?   @db.VarChar(100)
+  userId       Int?
+  users        users?    @relation(fields: [userId], references: [user_id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
 }
 
 enum Role {

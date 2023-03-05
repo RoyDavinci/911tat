@@ -2,7 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {Request, Response} from "express";
 import bcrypt from "bcryptjs";
-import {Prisma} from "@prisma/client";
+import {Prisma, users} from "@prisma/client";
 import jwt from "jsonwebtoken";
 import HTTP_STATUS_CODE from "../../constants/httpCodes";
 import prisma from "../../db/prisma";
@@ -160,3 +160,107 @@ export const updateProfileImage = async (req: Request, res: Response) => {
         return res.status(200).json({message: "an error occured on photo change", error, success: false});
     }
 };
+
+export async function updateProfileDetails(req: Request, res: Response) {
+    const {
+        city,
+        state,
+        country,
+        build,
+        height,
+        bustsize,
+        orientation,
+        anal,
+        oral,
+        condom,
+        smoke,
+        ethnicity,
+        age,
+        shorttime,
+        overnight,
+    } = req.body;
+    const {user_id, escort_id} = req.user as unknown as users;
+    try {
+        const findUser = await prisma.users.findUnique({where: {user_id}});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
+        const updateEscort = await prisma.escorts.update({
+            where: {escort_id: Number(escort_id)},
+            data: {
+                BustSize: bustsize,
+                orientation,
+                oralSex: oral,
+                city,
+                state,
+                country,
+                ethnicity,
+                smoke,
+                age,
+                shortTimeRate: shorttime,
+                overNightRate: overnight,
+                anal,
+                condom,
+                build,
+                height,
+            },
+        });
+        return res.status(200).json({message: "details updated", updateEscort, success: true});
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info(e);
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
+                    message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
+                });
+            }
+            logger.info(e);
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
+        }
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+
+export async function uploadImages(req: Request, res: Response) {
+    const {user_id} = req.user as unknown as users;
+    try {
+        const findUser = await prisma.users.findUnique({where: {user_id}});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
+        if (!req.file || !req.files)
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({message: "please pass a file", success: false});
+        if (req.files.length > 4 && !findUser.isVerified)
+            return res
+                .status(HTTP_STATUS_CODE.BAD_REQUEST)
+                .json({message: "you have to be verified to upload more than four images", success: false});
+        const files = req.files as Express.Multer.File[];
+        // eslint-disable-next-line consistent-return
+        files.forEach(async file => {
+            const result = await streamUpload(file.buffer);
+            if (result.message) return res.status(result.http_code).json({message: result.message, success: false});
+            await prisma.images.create({data: {userId: user_id, images: result.secure_url}});
+        });
+        return res.status(200).json({message: "images updated", success: true});
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info(e);
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
+                    message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
+                });
+            }
+            logger.info(e);
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
+        }
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
