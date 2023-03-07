@@ -20,7 +20,7 @@ export const ProfileHeader = () => {
 	return (
 		<div className='flex items-center profileHeader__container'>
 			<Link to='/update'>
-				<div className=' profileHeader__img__container'>
+				<div className=' profileHeader__img__container rounded-full w-20'>
 					<img
 						src={user?.profilePhoto ? user?.profilePhoto : defaultImage}
 						alt=''

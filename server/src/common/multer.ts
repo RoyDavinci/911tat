@@ -6,7 +6,7 @@ function uploadArray(req: Request, res: Response, next: NextFunction) {
     try {
         const upload = multer({
             limits: {fileSize: 1 * 1024 * 1024, fieldSize: 10 * 1024 * 1024},
-        }).array("product", 10);
+        }).array("images", 10);
 
         return upload(req, res, err => {
             if (err instanceof multer.MulterError) {

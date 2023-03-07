@@ -44,12 +44,12 @@ export const MobileHeader = () => {
 						</span>
 					</a>
 				</div>
-				<div>
+				<div className='flex items-center justify-center'>
 					<i className='fa-solid fa-magnifying-glass mx-3'></i>
-					<div className='header__useImage rounded-full'>
+					<div className='header__useImage flex-1'>
 						<img
 							src={user?.profilePhoto ? user.profilePhoto : defaultImage}
-							className='mr-3  '
+							className='rounded-full w-10'
 							alt='user image'
 						/>
 					</div>

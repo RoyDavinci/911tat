@@ -24,7 +24,7 @@ model users {
   clients         client?        @relation(fields: [client_id], references: [client_id])
   escorts         escorts?       @relation(fields: [escort_id], references: [escort_id])
   admin           admin?         @relation(fields: [adminId], references: [id])
-  Images          Images[]
+  transactions    transactions[]
   created_at      DateTime       @default(now())
   updated_at      DateTime?
 }
@@ -50,6 +50,7 @@ model escorts {
   shortTimeRate String?   @db.VarChar(10)
   overNightRate String?   @db.VarChar(10)
   users         users?
+  Images        Images[]
   created_at    DateTime  @default(now())
   updated_at    DateTime?
 }
@@ -87,7 +88,7 @@ model Images {
   images       String?   @db.VarChar(200)
   profileImage String?   @db.VarChar(100)
   userId       Int?
-  users        users?    @relation(fields: [userId], references: [user_id])
+  escort       escorts?  @relation(fields: [userId], references: [escort_id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime?
 }
@@ -95,4 +96,25 @@ model Images {
 enum Role {
   Super_Admin
   Admin
+}
+
+model transactions {
+  transactionId         Int       @id @default(autoincrement())
+  transaction_status    Status    @default(pending)
+  phone                 String?
+  email                 String
+  amount                String
+  payment_type          String
+  biller_Reference      String
+  transaction_reference String    @db.VarChar(50)
+  userId                Int
+  users                 users?    @relation(fields: [userId], references: [user_id])
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime?
+}
+
+enum Status {
+  pending
+  successful
+  failed
 }

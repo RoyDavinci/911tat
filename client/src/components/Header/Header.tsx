@@ -58,7 +58,7 @@ export const Header = () => {
 							</li>
 							<li>
 								<i className='fa-solid fa-lock'></i>
-								<Link to='#'>SignIn/Register</Link>
+								<Link to='/login'>SignIn/Register</Link>
 							</li>
 							<li className='showCase'>
 								<i className='fa-regular fa-square-plus'></i>

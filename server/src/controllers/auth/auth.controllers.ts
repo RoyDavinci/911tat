@@ -119,6 +119,37 @@ export const blacklistUser = async (req: Request, res: Response) => {
     }
 };
 
+export async function unblaclikstUser(req: Request, res: Response) {
+    const {id} = req.params;
+    const {adminId} = req.user as unknown as IUser;
+    try {
+        const findAdmin = await prisma.users.findFirst({where: {adminId}});
+        if (!findAdmin) return res.status(400).json({message: "addmin does not exist", success: false});
+        const findUser = await prisma.users.findUnique({where: {user_id: Number(id)}});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
+        await prisma.users.update({where: {user_id: Number(id)}, data: {accountStatus: 1234567890}});
+        return res.status(400).json({message: "user banned", success: true});
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info(e);
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
+                    message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
+                });
+            }
+            logger.info(e);
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
+        }
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+
 export const login = async (req: Request, res: Response) => {
     const {user_id, adminId} = req.user as unknown as IUser;
     try {
@@ -230,18 +261,19 @@ export async function uploadImages(req: Request, res: Response) {
     try {
         const findUser = await prisma.users.findUnique({where: {user_id}});
         if (!findUser) return res.status(400).json({message: "user not found", success: false});
-        if (!req.file || !req.files)
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({message: "please pass a file", success: false});
-        if (req.files.length > 4 && !findUser.isVerified)
+        const files = req.files as Express.Multer.File[];
+        if (files.length > 4 && !findUser.isVerified)
             return res
                 .status(HTTP_STATUS_CODE.BAD_REQUEST)
                 .json({message: "you have to be verified to upload more than four images", success: false});
-        const files = req.files as Express.Multer.File[];
+
+        if (!findUser.escort_id)
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({message: "user not an escort", success: false});
         // eslint-disable-next-line consistent-return
         files.forEach(async file => {
             const result = await streamUpload(file.buffer);
             if (result.message) return res.status(result.http_code).json({message: result.message, success: false});
-            await prisma.images.create({data: {userId: user_id, images: result.secure_url}});
+            await prisma.images.create({data: {userId: findUser.escort_id, images: result.secure_url}});
         });
         return res.status(200).json({message: "images updated", success: true});
     } catch (e) {
@@ -258,6 +290,74 @@ export async function uploadImages(req: Request, res: Response) {
             logger.info(e);
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
         }
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+
+export async function getEscort(req: Request, res: Response) {
+    const {id} = req.params;
+    try {
+        const findUser = await prisma.escorts.findUnique({where: {escort_id: Number(id)}});
+        if (!findUser) return res.status(400).json({message: "user not gotten", success: false});
+        const escort = await prisma.escorts.findUniqueOrThrow({
+            where: {escort_id: Number(id)},
+            include: {Images: true},
+        });
+        return res.status(200).json({message: "escort gotten", success: true, escort});
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info(e);
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
+                    message: "There is a unique constraint violation, a new user cannot be created with this email",
+                    success: false,
+                });
+            }
+            logger.info(e);
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({error: e, success: false});
+        }
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+
+export async function getAllEscorts(req: Request, res: Response) {
+    try {
+        const allEscort = await prisma.escorts.findMany({include: {Images: true}});
+        return res.status(200).json({message: "escort gotten", allEscort, success: true});
+    } catch (e) {
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+
+export async function getClient(req: Request, res: Response) {
+    const {user_id} = req.user as users;
+    try {
+        const findUser = await prisma.users.findUnique({where: {user_id}});
+        if (!findUser) return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({message: "user not found", success: false});
+        return res.status(200).json({message: "user gotten", user: {findUser}});
+    } catch (e) {
+        logger.info(e);
+        return res
+            .status(HTTP_STATUS_CODE.BAD_REQUEST)
+            .json({error: e, message: "an error occured on creating a user", success: false});
+    }
+}
+export async function getAllClient(req: Request, res: Response) {
+    try {
+        const allEscort = await prisma.client.findMany({});
+        return res.status(200).json({message: "escort gotten", allEscort, success: true});
+    } catch (e) {
         logger.info(e);
         return res
             .status(HTTP_STATUS_CODE.BAD_REQUEST)
