@@ -1,9 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
+import { IUser } from "../../interfaces/userinterfaces";
 
 export const Header = () => {
 	const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
+	const [userInfo, setUserInfo] = useState<IUser>();
+
+	useEffect(() => {
+		const user = localStorage.getItem("user");
+		if (user) {
+			const data = JSON.parse(user) as unknown as IUser;
+			setUserInfo(data);
+		} else {
+			console.log("object");
+		}
+	}, []);
 
 	return (
 		<header className='headerContainer'>
@@ -35,7 +47,7 @@ export const Header = () => {
 						</div>
 					</div>
 				</div>
-				<div className='bigScreenHeader'>
+				<div className='bigScreenHeader lg:px-20'>
 					<a href='https://flowbite.com' className='flex items-center'>
 						<img
 							src='https://flowbite.com/docs/images/logo.svg'
@@ -57,8 +69,20 @@ export const Header = () => {
 								<Link to='#'>Location</Link>
 							</li>
 							<li>
-								<i className='fa-solid fa-lock'></i>
-								<Link to='/login'>SignIn/Register</Link>
+								{userInfo?.profilePhoto ? (
+									<div className='flex gap-2 p-2 items-center shadow-lg rounded-lg '>
+										<img
+											src={userInfo.profilePhoto}
+											alt=''
+											className='rounded-full w-12 h-12'
+										/>
+									</div>
+								) : (
+									<div>
+										<i className='fa-solid fa-lock'></i>
+										<Link to='/login'>SignIn/Register</Link>
+									</div>
+								)}
 							</li>
 							<li className='showCase'>
 								<i className='fa-regular fa-square-plus'></i>
@@ -80,8 +104,17 @@ export const Header = () => {
 							<Link to='#'>Location</Link>
 						</li>
 						<li>
-							<i className='fa-solid fa-lock'></i>
-							<Link to='#'>SignIn/Register</Link>
+							{userInfo?.profilePhoto ? (
+								<div>
+									<i className='fa-solid fa-user'></i>
+									<Link to='/profile'>Profile</Link>
+								</div>
+							) : (
+								<div>
+									<i className='fa-solid fa-lock'></i>
+									<Link to='#'>SignIn/Register</Link>
+								</div>
+							)}
 						</li>
 					</ul>
 				</div>

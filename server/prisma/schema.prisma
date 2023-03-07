@@ -12,7 +12,7 @@ model users {
   username        String         @db.VarChar(200)
   email           String         @unique @db.VarChar(200)
   phone           String?
-  profilePhoto    String?
+  profilePhoto    String?        @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
@@ -86,8 +86,8 @@ model admin {
 model Images {
   imageId      Int       @id @default(autoincrement())
   images       String?   @db.VarChar(200)
-  profileImage String?   @db.VarChar(100)
-  userId       Int?
+  profileImage String?   @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png") @db.VarChar(100)
+  userId       Int
   escort       escorts?  @relation(fields: [userId], references: [escort_id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime?

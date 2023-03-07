@@ -58,14 +58,16 @@ export const registerAsEscort = async (req: Request, res: Response) => {
             return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({message: "user already exists", success: false});
         const hashedPassword = await bcrypt.hash(password, 10);
         const createEscort = await prisma.escorts.create({data: {email, username, phone}});
-        const newUser = await prisma.users.create({
+        const user = await prisma.users.create({
             data: {escort_id: createEscort.escort_id, email, username, password: hashedPassword, phone},
         });
+        const token = jwt.sign({id: user.user_id}, config.server.secret);
 
         return res.status(200).json({
             message: "user created",
-            user: {id: newUser.user_id, username: newUser.username, email: newUser.email, phone: newUser.phone},
+            createEscort,
             success: true,
+            token,
         });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -151,7 +153,7 @@ export async function unblaclikstUser(req: Request, res: Response) {
 }
 
 export const login = async (req: Request, res: Response) => {
-    const {user_id, adminId} = req.user as unknown as IUser;
+    const {user_id, adminId, escort_id} = req.user as unknown as IUser;
     try {
         if (adminId) {
             const findAdmin = await prisma.users.findUnique({where: {adminId}});
@@ -159,10 +161,13 @@ export const login = async (req: Request, res: Response) => {
             const token = jwt.sign({id: findAdmin.user_id}, config.server.secret);
             return res.status(200).json({message: "login successful", success: true, user: {findAdmin}, token});
         }
-        const findUser = await prisma.users.findUnique({where: {user_id}});
+        const findUser = await prisma.escorts.findUnique({
+            where: {escort_id: escort_id as number | undefined},
+            include: {Images: true},
+        });
 
         if (!findUser) return res.status(400).json({message: "user not found"});
-        const token = jwt.sign({id: findUser.user_id}, config.server.secret);
+        const token = jwt.sign({id: user_id}, config.server.secret);
         return res.status(200).json({message: "login successful", success: true, user: findUser, token});
     } catch (error) {
         logger.info(error);
@@ -170,17 +175,39 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
-export const updateProfileImage = async (req: Request, res: Response) => {
-    const {user_id} = req.user as unknown as IUser;
-
+export async function upLoadImage(req: Request, res: Response) {
+    const {escort_id} = req.user as unknown as IUser;
     try {
-        const findUser = await prisma.users.findUnique({where: {user_id}});
+        const findUser = await prisma.escorts.findUnique({where: {escort_id: escort_id as number | undefined}});
         if (!findUser) return res.status(400).json({message: "user not found", success: false});
         if (!req.file) return res.status(400).json({message: "file needed", success: false});
         const data = await streamUpload(req.file.buffer);
         if (data.message)
             return res.status(data.http_code).json({message: "an error occured", err: data.message, success: false});
-        const user = await prisma.users.update({where: {user_id}, data: {profilePhoto: data.secure_url}});
+        await prisma.images.create({data: {userId: escort_id as number, profileImage: data.secure_url}});
+        return res.status(200).json({
+            message: "photo updated",
+            findUser,
+            success: true,
+        });
+    } catch (error) {
+        logger.info(error);
+        return res.status(200).json({message: "an error occured on photo change", error, success: false});
+    }
+}
+
+export const updateProfileImage = async (req: Request, res: Response) => {
+    const {escort_id} = req.user as unknown as IUser;
+
+    try {
+        const findUser = await prisma.escorts.findUnique({where: {escort_id: escort_id as number | undefined}});
+        if (!findUser) return res.status(400).json({message: "user not found", success: false});
+        if (!req.file) return res.status(400).json({message: "file needed", success: false});
+        const data = await streamUpload(req.file.buffer);
+        if (data.message)
+            return res.status(data.http_code).json({message: "an error occured", err: data.message, success: false});
+        const user =
+            await prisma.$queryRaw`UPDATE Images SET profileImage=${data.secure_url} WHERE userId=${escort_id}`;
         return res.status(200).json({
             message: "photo updated",
             user,
@@ -273,7 +300,7 @@ export async function uploadImages(req: Request, res: Response) {
         files.forEach(async file => {
             const result = await streamUpload(file.buffer);
             if (result.message) return res.status(result.http_code).json({message: result.message, success: false});
-            await prisma.images.create({data: {userId: findUser.escort_id, images: result.secure_url}});
+            await prisma.images.create({data: {userId: findUser.escort_id as number, images: result.secure_url}});
         });
         return res.status(200).json({message: "images updated", success: true});
     } catch (e) {

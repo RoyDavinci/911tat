@@ -75,7 +75,7 @@ export const Escort = () => {
 					</div>
 				</div>
 			</section>
-			<section className='home__latest'>
+			<section className='home__latest px-12 md:items-center place-items-center md:px-12'>
 				<div className='home__latestContainer'>
 					<div className='home__blockContainer'>
 						<div className='otherEscortContainer products' id=''>
@@ -105,7 +105,7 @@ export const Escort = () => {
 				</div>
 			</section>
 			{data.length > 3 && (
-				<section className='home__recentlyViewed'>
+				<section className='home__recentlyViewed sm:px-12'>
 					<div className='home__latestContainer'>
 						<div id='recent-ads' className='home__blockContainer onhome'>
 							<h2>Recently Viewed</h2>
