@@ -1,0 +1,16 @@
+@media (max-width: 899px) {
+	.showHeader {
+		display: none;
+	}
+	.smallScreen {
+		display: block;
+	}
+}
+@media (min-width: 900px) {
+	.showHeader {
+		display: block;
+	}
+	.smallScreen {
+		display: none;
+	}
+}

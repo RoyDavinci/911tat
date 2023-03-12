@@ -1,25 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { verified } from "../../interfaces/user";
+import { userItems } from "../../interfaces/user";
 import { useParams } from "react-router-dom";
 import "./singleEscort.css";
-import { items } from "../../helpers/data";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addToCart } from "../../features/cart/cart";
 import { Footer, Header } from "../../components";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { SingleEscortPayloadResponse } from "../../interfaces/userinterfaces";
 
 export const SingleEscort = () => {
-	const [escort, setEscort] = useState<verified>();
+	const [escort, setEscort] = useState<userItems>();
+	const [images, setImages] = useState<(string | null)[]>([""]);
+	const [currentImage, setCurrentImage] = useState<number>(0);
 	const dispatch = useAppDispatch();
 
+	const { data, status } = useAppSelector((state) => state.singleEscort);
+
 	const { id } = useParams();
-	const { data } = useAppSelector((state) => state.cart);
+	const { cart } = useAppSelector((state) => state.cartItems);
+
+	const nextButton = () => {
+		if (currentImage === images.length - 1) {
+			setCurrentImage(0);
+		} else {
+			setCurrentImage((prev) => prev + 1);
+		}
+	};
+
+	const prevButton = () => {
+		if (currentImage === 0) {
+			setCurrentImage(images.length - 1);
+		} else {
+			setCurrentImage((prev) => prev - 1);
+		}
+	};
 
 	useEffect(() => {
-		const getElement = () => {
-			const itemData = items.find((item) => item.id === Number(id));
-			setEscort(itemData);
-			dispatch(addToCart(itemData));
+		const getElement = async () => {
+			const { data } = await axios.get(
+				`http://localhost:2900/api/v1/user/${id}`
+			);
+			const response = data as SingleEscortPayloadResponse;
+			if (response.success) {
+				setEscort(response.user);
+				console.log(response.user);
+				dispatch(addToCart(response.user));
+				let item: (string | null)[] = [];
+				item.push(response.user.profilePhoto);
+				response.user.Images.map((image) => {
+					return item.push(image.images);
+				});
+				setImages(item);
+			}
 		};
 		getElement();
 	}, [id]);
@@ -32,29 +65,45 @@ export const SingleEscort = () => {
 					<div className='data-box'>
 						<div className='item-main' id='item-main'>
 							<div className='item-left'>
-								<div className='itemMainContent'>
+								<div className='itemMainContent flex items-center w-full'>
 									<div>
-										<i className='fa-solid fa-circle-chevron-left'></i>
+										<i
+											className='fa-solid fa-circle-chevron-left'
+											onClick={prevButton}
+										></i>
+									</div>
+									<div className=' basis-[100%]'>
+										<img
+											src={images[currentImage] || ""}
+											alt=''
+											className='lg:w-full'
+											style={{}}
+										/>
 									</div>
 									<div>
-										<img src={escort?.url} alt='' />
-									</div>
-									<div>
-										<i className='fa-solid fa-circle-chevron-right'></i>
+										<i
+											className='fa-solid fa-circle-chevron-right'
+											onClick={nextButton}
+										></i>
 									</div>
 								</div>
 								<div className='swiper-thumbs'>
 									<ul>
-										<li>
-											<img src={escort?.thumbnailUrl} alt='' />
-										</li>
-										<li>
-											<img src={escort?.thumbnailUrl} alt='' />
-										</li>
+										{escort?.Images?.map((item, index) => {
+											return (
+												<li key={index}>
+													<img
+														src={item.images || ""}
+														alt=''
+														className='object-cover h-20 w-20'
+													/>
+												</li>
+											);
+										})}
 									</ul>
 								</div>
 								<div className='basic'>
-									<h1>{escort?.title}</h1>
+									<h1>{escort?.username}</h1>
 									<div className='details'>
 										<span>Female</span>
 										<div className='location'>
@@ -63,9 +112,9 @@ export const SingleEscort = () => {
 												Location
 											</h2>
 											<div className='address'>
-												<p>Garki 1</p>
-												<p>Abuja</p>
-												<p>Nigeria</p>
+												<p>{escort?.description?.city}</p>
+												<p>{escort?.description?.state}</p>
+												<p>{escort?.description?.country}</p>
 											</div>
 										</div>
 									</div>
@@ -82,47 +131,65 @@ export const SingleEscort = () => {
 										</div>
 										<div className='field type-DROPDOWN'>
 											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='value'>
+												{escort?.description?.build}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Anal</span>
+											<span className='value'>{escort?.description?.anal}</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Age</span>
+											<span className='value'>{escort?.description?.age}</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Condom</span>
+											<span className='value'>
+												{escort?.description?.condom}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>ShortTime</span>
+											<span className='value'>
+												{escort?.description?.shortTimeRate}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Overnight</span>
+											<span className='value'>
+												{escort?.description?.overNightRate}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>BustSize</span>
+											<span className='value'>
+												{escort?.description?.BustSize}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Orientation</span>
+											<span className='value'>
+												{escort?.description?.orientation}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Smoke</span>
+											<span className='value'>
+												{escort?.description?.smoke}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Gender</span>
+											<span className='value'>
+												{escort?.description?.gender}
+											</span>
 										</div>
 										<div className='field type-DROPDOWN'>
-											<span className='name'>Build</span>
-											<span className='value'>curvy</span>
+											<span className='name'>Height</span>
+											<span className='value'>
+												{escort?.description?.height}
+											</span>
 										</div>
 									</div>
 									<div className='item-hook'>
@@ -196,11 +263,11 @@ export const SingleEscort = () => {
 								<div className='boxed' id='seller'>
 									<div className='line1'>
 										<div className='img'>
-											<img src={escort?.thumbnailUrl} alt='' />
+											<img src={escort?.profilePhoto || ""} alt='' />
 										</div>
 										<div className='data'>
 											<a href='' className='name'>
-												{escort?.title}
+												{escort?.username}
 											</a>
 										</div>
 									</div>
@@ -252,7 +319,7 @@ export const SingleEscort = () => {
 						</div>
 					</div>
 				</div>
-				{data.length > 3 && (
+				{/* {cart.length > 3 && (
 					<section className='home__recentlyViewed'>
 						<div className='home__latestContainer'>
 							<div id='recent-ads' className='home__blockContainer onhome'>
@@ -261,16 +328,16 @@ export const SingleEscort = () => {
 									className='featuredEscortContainer products'
 									id='premium-items'
 								>
-									{data.map((item, index) => {
+									{cart.map((item, index) => {
 										return (
 											<div key={index} className='escort__itemContainer'>
 												<div className='simple-wrap'>
-													<Link to={`/${item.id}`}>
+													<Link to={`/${item.user_id}`}>
 														<div>
 															<div className='img-wrap'>
-																<img src={item.url} alt='' />
+																<img src={item.profilePhoto || ""} alt='' />
 																<div className='user-image'>
-																	<img src={item.url} alt='' />
+																	<img src={item.profilePhoto || ""} alt='' />
 																</div>
 																<div className='favorite'>
 																	<i className='fa-solid fa-star'></i>
@@ -286,7 +353,7 @@ export const SingleEscort = () => {
 																</div>
 															</div>
 															<div className='data'>
-																<p>{item.title}</p>
+																<p>{item.username}</p>
 																<p className='title__escort__titleItem'>
 																	SexWise
 																</p>
@@ -302,8 +369,8 @@ export const SingleEscort = () => {
 							</div>
 						</div>
 					</section>
-				)}
-				{data.length > 3 && (
+				)} */}
+				{cart.length > 3 && (
 					<section className='home__recentlyViewed'>
 						<div className='home__latestContainer'>
 							<div id='recent-ads' className='home__blockContainer onhome'>
@@ -312,16 +379,16 @@ export const SingleEscort = () => {
 									className='featuredEscortContainer products'
 									id='premium-items'
 								>
-									{data.map((item, index) => {
+									{cart.map((item, index) => {
 										return (
 											<div key={index} className='escort__itemContainer'>
 												<div className='simple-wrap'>
-													<Link to={`/${item.id}`}>
+													<Link to={`/${item.user_id}`}>
 														<div>
 															<div className='img-wrap'>
-																<img src={item.url} alt='' />
+																<img src={item.profilePhoto || ""} alt='' />
 																<div className='user-image'>
-																	<img src={item.url} alt='' />
+																	<img src={item.profilePhoto || ""} alt='' />
 																</div>
 																<div className='favorite'>
 																	<i className='fa-solid fa-star'></i>
@@ -337,7 +404,7 @@ export const SingleEscort = () => {
 																</div>
 															</div>
 															<div className='data'>
-																<p>{item.title}</p>
+																<p>{item.username}</p>
 																<p className='title__escort__titleItem'>
 																	SexWise
 																</p>

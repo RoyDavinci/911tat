@@ -36,3 +36,13 @@
 .profile__Container {
 	padding: 10px;
 }
+.blink {
+	animation: blinker 3s linear infinite;
+	color: red;
+	font-family: sans-serif;
+}
+@keyframes blinker {
+	50% {
+		opacity: 0;
+	}
+}

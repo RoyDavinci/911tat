@@ -2,34 +2,34 @@ import React, { useEffect, useState } from "react";
 import "./escort.css";
 import { items } from "../../helpers/data";
 import { Link } from "react-router-dom";
-import { verified } from "../../interfaces/user";
-import { useAppSelector } from "../../app/hooks";
+import { allUser, userItems, verified } from "../../interfaces/user";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getUsers } from "../../features/user/getAllUser";
 
 export const Escort = () => {
-	const [verifiedInfo, setVerifiedInfo] = useState<verified[]>([]);
-	const [unVerifiedInfo, setUnVerifiedInfo] = useState<verified[]>([]);
-	const { data } = useAppSelector((state) => state.cart);
+	const [verifiedInfo, setVerifiedInfo] = useState<userItems[]>([]);
+	const [unVerifiedInfo, setUnVerifiedInfo] = useState<userItems[]>([]);
+	const [escort, setEscort] = useState<userItems[]>([]);
+	const { cart } = useAppSelector((state) => state.cartItems);
+
+	const { data, error, message, status } = useAppSelector(
+		(state) => state.escort
+	);
+
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		const setData = () => {
-			let verifiedArray: verified[] = [];
-			let unverifiedArray: verified[] = [];
-			for (let i = 0; i < items.length; i++) {
-				if (items[i].verified) {
-					verifiedArray.push(items[i]);
-				} else {
-					unverifiedArray.push(items[i]);
-				}
-			}
-			setVerifiedInfo(verifiedArray);
-			setUnVerifiedInfo(unverifiedArray);
-		};
+		if (status === "idle") {
+			dispatch(getUsers());
+		}
+		if (status === "successful") {
+			setEscort(data.allEscort);
+			setVerifiedInfo(data.allEscort.slice(0, 10));
+			setUnVerifiedInfo(data.allEscort.slice(10, data.allEscort.length));
+		}
+	}, [status]);
 
-		setData();
-		return () => {
-			console.log("data cleared");
-		};
-	}, [data]);
+	console.log(escort);
 
 	return (
 		<div className='escort__container'>
@@ -41,12 +41,12 @@ export const Escort = () => {
 							return (
 								<div key={index} className='escort__itemContainer'>
 									<div className='simple-wrap'>
-										<Link to={`/${item.id}`}>
+										<Link to={`/${item.user_id}`}>
 											<div>
 												<div className='img-wrap'>
-													<img src={item.url} alt='' />
+													<img src={item.profilePhoto || ""} alt='' />
 													<div className='user-image'>
-														<img src={item.url} alt='' />
+														<img src={item.profilePhoto || ""} alt='' />
 													</div>
 													<div className='favorite'>
 														<i className='fa-solid fa-star'></i>
@@ -62,7 +62,7 @@ export const Escort = () => {
 													</div>
 												</div>
 												<div className='data'>
-													<p>{item.title}</p>
+													<p>{item.username}</p>
 													<p className='title__escort__titleItem'>SexWise</p>
 													<p className='gender__escortGender'>Female</p>
 												</div>
@@ -82,10 +82,10 @@ export const Escort = () => {
 							{unVerifiedInfo.map((item, index) => {
 								return (
 									<div key={index} className='escort__itemContainer others'>
-										<Link to={`/${item.id}`}>
+										<Link to={`/${item.user_id}`}>
 											<div>
 												<div className='img-wrap'>
-													<img src={item.url} alt='' />
+													<img src={item?.profilePhoto || ""} alt='' />
 													<div className='bar'>
 														<div className='image-counter'>
 															<i className='fa-solid fa-camera'></i>
@@ -93,7 +93,7 @@ export const Escort = () => {
 														</div>
 													</div>
 												</div>
-												<p>{item.title}</p>
+												<p>{item.username}</p>
 												<div></div>
 											</div>
 										</Link>
@@ -104,7 +104,7 @@ export const Escort = () => {
 					</div>
 				</div>
 			</section>
-			{data.length > 3 && (
+			{cart.length > 3 && (
 				<section className='home__recentlyViewed sm:px-12'>
 					<div className='home__latestContainer'>
 						<div id='recent-ads' className='home__blockContainer onhome'>
@@ -113,16 +113,16 @@ export const Escort = () => {
 								className='featuredEscortContainer products'
 								id='premium-items'
 							>
-								{data.map((item, index) => {
+								{cart.map((item, index) => {
 									return (
 										<div key={index} className='escort__itemContainer'>
 											<div className='simple-wrap'>
-												<Link to={`/${item.id}`}>
+												<Link to={`/${item.user_id}`}>
 													<div>
 														<div className='img-wrap'>
-															<img src={item.url} alt='' />
+															<img src={item?.profilePhoto || ""} alt='' />
 															<div className='user-image'>
-																<img src={item.url} alt='' />
+																<img src={item?.profilePhoto || ""} alt='' />
 															</div>
 															<div className='favorite'>
 																<i className='fa-solid fa-star'></i>
@@ -138,7 +138,7 @@ export const Escort = () => {
 															</div>
 														</div>
 														<div className='data'>
-															<p>{item.title}</p>
+															<p>{item.username}</p>
 															<p className='title__escort__titleItem'>
 																SexWise
 															</p>

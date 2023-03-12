@@ -4,7 +4,7 @@ import "./profileHeader.css";
 import defaultImage from "../../../assets/icons8-user-64.png";
 import { Link } from "react-router-dom";
 
-export const ProfileHeader = () => {
+export const MobileProfileHeader = () => {
 	const [user, setUser] = useState<IUser>();
 
 	useEffect(() => {
@@ -15,10 +15,9 @@ export const ProfileHeader = () => {
 		}
 		userDetail && setUser(JSON.parse(userDetail));
 	}, []);
-	console.log(user);
 
 	return (
-		<div className='flex items-center profileHeader__container'>
+		<div className='flex items-center profileHeader__container py-10'>
 			<Link to='/update'>
 				<div className=' profileHeader__img__container rounded-full w-20'>
 					<img

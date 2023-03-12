@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { verified } from "../../interfaces/user";
+import { userItems, verified } from "../../interfaces/user";
 
 export interface AllCartInterface {
-	data: verified[];
+	cart: userItems[];
 }
 
 export const initialState: AllCartInterface = {
-	data: [],
+	cart: [],
 };
 
 export const cartSlice = createSlice({
@@ -14,17 +14,21 @@ export const cartSlice = createSlice({
 	initialState,
 	reducers: {
 		addToCart: (state, action) => {
-			let item = state.data.find((data) => data.id === action.payload.id);
+			console.log(action.payload);
+			let item = state.cart?.find(
+				(data) => data.user_id === action.payload.user_id
+			);
 			if (item) return;
-			const items = { ...action.payload };
-			state.data.push(items);
+			state.cart?.push(action.payload);
 		},
 		removeFromCart: (state, action) => {
-			let item = state.data.filter((item) => item.id !== action.payload.id);
-			state.data = item;
+			let item = state.cart?.filter(
+				(item) => item.user_id !== action.payload.user_id
+			);
+			state.cart = item;
 		},
 		clearCart: (state) => {
-			state.data = [];
+			state.cart = [];
 		},
 	},
 });

@@ -9,7 +9,6 @@ const userRouter = Router();
 userRouter.get("/", controllers.getAllEscorts);
 userRouter.get("/:id", controllers.getEscort);
 userRouter.post("/register-as-escort", middlewares.escortCreateValidator, controllers.registerAsEscort);
-userRouter.post("/register-as-client", middlewares.clientCreateValidator, controllers.registerAsClient);
 userRouter.post("/profile-image", authenticateJWT, uploadSingle, controllers.upLoadImage);
 userRouter.post("/login", authenticateLocal, controllers.login);
 userRouter.patch("/upload-profile-photo", authenticateJWT, uploadSingle, controllers.updateProfileImage);

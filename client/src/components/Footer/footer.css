@@ -13,9 +13,22 @@
 .footer__container div button {
 	margin: 0px 10px;
 }
-.footer__container div button {
+.footer__container div a {
 	border: 1px solid #ccc;
 	color: white;
 	padding: 10px 15px;
 	border-radius: 5px;
+}
+
+@media (max-width: 899px) {
+	.footer__container div {
+		display: block;
+		text-align: center;
+	}
+	.footer__container div a {
+		margin: 30px 0px;
+	}
+	.footer__container div h2 {
+		padding-bottom: 20px;
+	}
 }

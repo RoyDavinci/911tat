@@ -1,27 +1,7 @@
+/* eslint-disable import/prefer-default-export */
 import {check} from "express-validator";
 import validationErrorHandler from "../../utils/validationErrorrHandler";
 
-export const clientCreateValidator = [
-    check("username")
-        .isString()
-        .withMessage("username must be string")
-        .bail()
-        .notEmpty()
-        .withMessage("username must not be empty"),
-    check("password")
-        .notEmpty()
-        .withMessage("password must not be empty")
-        .bail()
-        .isString()
-        .withMessage("password must be string"),
-    check("email")
-        .notEmpty()
-        .withMessage("email is requiredd")
-        .bail()
-        .isEmail()
-        .withMessage("email field must be of email type"),
-    validationErrorHandler,
-];
 export const escortCreateValidator = [
     check("username")
         .isString()
@@ -45,7 +25,7 @@ export const escortCreateValidator = [
         .notEmpty()
         .withMessage("phone is required")
         .bail()
-        .isMobilePhone("en-NG", {strictMode: true})
+        .isMobilePhone("en-NG")
         .withMessage("mobile must be nigerian number")
         .bail()
         .isString()

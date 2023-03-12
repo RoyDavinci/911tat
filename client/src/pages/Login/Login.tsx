@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginAdmin } from "../../features/auth/login";
 import logging from "../../helpers/logging";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 import { IUser, payloadResponse } from "../../interfaces/userinterfaces";
 
 export const Login = () => {
@@ -31,7 +32,6 @@ export const Login = () => {
 	const handleSubmit = async (e: BaseSyntheticEvent) => {
 		e.preventDefault();
 		try {
-			e.preventDefault();
 			if (status === "idle") {
 				dispatch(
 					loginAdmin({
@@ -41,9 +41,11 @@ export const Login = () => {
 				);
 			}
 			if (status === "successful") {
+				toast("Account successfully created");
+				navigate("/profile");
 			}
 			if (status === "failed") {
-				setError("Invalid username or password");
+				toast(error.message);
 			}
 		} catch (error) {
 			const err = error as string;
@@ -51,7 +53,6 @@ export const Login = () => {
 			setError(err);
 		}
 	};
-	console.log(status);
 
 	useEffect(() => {
 		const userState = localStorage.getItem("user");
@@ -60,6 +61,7 @@ export const Login = () => {
 	return (
 		<div>
 			<section className='bg-gray-50 dark:bg-gray-900'>
+				<ToastContainer />
 				<div className='flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0'>
 					<Link
 						to='#'

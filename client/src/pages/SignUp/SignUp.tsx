@@ -1,118 +1,199 @@
-import React from "react";
+import React, { BaseSyntheticEvent, ChangeEvent, useState } from "react";
 import "./sugnUp.css";
+import { AxiosError } from "axios";
+import Asset from "../../assets/Anonymous-shadow-babe.svg";
+import { payloadErrorResponse } from "../../interfaces/userinterfaces";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { createUser } from "../../features/auth/login";
+import "react-toastify/dist/ReactToastify.css";
 
 export const SignUp = () => {
+	const [userDetail, setUserDetail] = useState({
+		email: "",
+		password: "",
+		city: "",
+		country: "",
+		phone: "",
+		state: "",
+		username: "",
+	});
+
+	const navigate = useNavigate();
+
+	const onchange = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setUserDetail({ ...userDetail, [name]: value });
+	};
+
+	const { data, status, error } = useAppSelector((state) => state.create);
+
+	const dispatch = useAppDispatch();
+
+	const handleSubmit = async (e: BaseSyntheticEvent) => {
+		e.preventDefault();
+		try {
+			if (status === "idle") {
+				await dispatch(createUser({ ...userDetail }));
+			}
+			if (status === "successful") {
+				toast("Account successfully created");
+				navigate("/dashboard");
+			}
+			if (status === "failed") {
+				toast(error.message);
+			}
+		} catch (error) {
+			const err = error as AxiosError<payloadErrorResponse>;
+			toast(err.response?.data.message);
+		}
+	};
+
 	return (
-		<div>
-			<section className='bg-white dark:bg-gray-900'>
-				<div className='py-8 px-4 mx-auto max-w-2xl lg:py-16'>
-					<h2 className='mb-4 text-xl font-bold text-gray-900 dark:text-white'>
-						Add a new product
+		<div className=''>
+			<ToastContainer />
+			<section className='flex flex-col md:flex-row gap-6  md:h-screen  justify-between'>
+				<div className='flex-1 items-center justify-center'>
+					<img
+						src={Asset}
+						alt=''
+						className='object-cover items-center justify-center'
+					/>
+				</div>
+				<div className='flex-1 md:px-20 px-6'>
+					<h2 className='mb-4 text-xl font-bold text-center text-gray-900 dark:text-white'>
+						Become An Escort
 					</h2>
-					<form action='#'>
-						<div className='grid gap-4 sm:grid-cols-2 sm:gap-6'>
-							<div className='sm:col-span-2'>
-								<label
-									htmlFor='name'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Product Name
-								</label>
-								<input
-									type='text'
-									name='name'
-									id='name'
-									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-									placeholder='Type product name'
-									required={true}
-								/>
-							</div>
-							<div className='w-full'>
-								<label
-									htmlFor='brand'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Brand
-								</label>
-								<input
-									type='text'
-									name='brand'
-									id='brand'
-									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-									placeholder='Product brand'
-									required={true}
-								/>
-							</div>
-							<div className='w-full'>
-								<label
-									htmlFor='price'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Price
-								</label>
-								<input
-									type='number'
-									name='price'
-									id='price'
-									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-									placeholder='$2999'
-									required={true}
-								/>
-							</div>
-							<div>
-								<label
-									htmlFor='category'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Category
-								</label>
-								<select
-									id='category'
-									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-								>
-									<option>Select category</option>
-									<option value='TV'>TV/Monitors</option>
-									<option value='PC'>PC</option>
-									<option value='GA'>Gaming/Console</option>
-									<option value='PH'>Phones</option>
-								</select>
-							</div>
-							<div>
-								<label
-									htmlFor='item-weight'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Item Weight (kg)
-								</label>
-								<input
-									type='number'
-									name='item-weight'
-									id='item-weight'
-									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-									placeholder='12'
-									required={true}
-								/>
-							</div>
-							<div className='sm:col-span-2'>
-								<label
-									htmlFor='description'
-									className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
-								>
-									Description
-								</label>
-								<textarea
-									id='description'
-									rows={8}
-									className='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
-									placeholder='Your description here'
-								></textarea>
-							</div>
+					<form action='' autoComplete='off' onSubmit={handleSubmit}>
+						<div>
+							<label
+								htmlFor='username'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								User Name
+							</label>
+							<input
+								type='text'
+								name='username'
+								id='username'
+								placeholder='Type user name'
+								required={true}
+								value={userDetail.username}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div className='w-full'>
+							<label
+								htmlFor='email'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								Email
+							</label>
+							<input
+								type='text'
+								name='email'
+								id='email'
+								placeholder='Email'
+								required={true}
+								value={userDetail.email}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div className='w-full'>
+							<label
+								htmlFor='price'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								Phone (use +234 format)
+							</label>
+							<input
+								type='number'
+								name='phone'
+								id='phone'
+								placeholder='+23456789087'
+								required={true}
+								value={userDetail.phone}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div>
+							<label
+								htmlFor='password'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								Password
+							</label>
+							<input
+								type='text'
+								name='password'
+								id='password'
+								placeholder='$password'
+								required={true}
+								value={userDetail.password}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div>
+							<label
+								htmlFor='state'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								State
+							</label>
+							<input
+								type='text'
+								name='state'
+								id='state'
+								placeholder='state'
+								value={userDetail.state}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div>
+							<label
+								htmlFor='city'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								City
+							</label>
+							<input
+								type='text'
+								name='city'
+								id='city'
+								placeholder='city'
+								value={userDetail.city}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
+						</div>
+						<div>
+							<label
+								htmlFor='country'
+								className='block my-2 text-xl font-medium text-gray-900 dark:text-white'
+							>
+								Country
+							</label>
+							<input
+								type='text'
+								name='country'
+								id='country'
+								placeholder='country'
+								value={userDetail.country}
+								onChange={onchange}
+								className='bg-gray-50 border border-gray-300 text-gray-900 text-xl rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'
+							/>
 						</div>
 						<button
 							type='submit'
-							className='inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800'
+							className=' px-2.5 py-2.5 mt-4 sm:mt-6 text-xl font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800 w-full'
 						>
-							Add product
+							Sign Up
 						</button>
 					</form>
 				</div>

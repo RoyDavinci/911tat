@@ -16,24 +16,21 @@ model users {
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
-  escort_id       Int?           @unique
-  client_id       Int?           @unique
   subscription_id Int?           @unique
   adminId         Int?           @unique
-  subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id])
-  clients         client?        @relation(fields: [client_id], references: [client_id])
-  escorts         escorts?       @relation(fields: [escort_id], references: [escort_id])
-  admin           admin?         @relation(fields: [adminId], references: [id])
+  descriptionId   Int?           @unique
+  role            Role           @default(Escort)
+  subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id], onDelete: Cascade)
+  admin           admin?         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  description     description?
   transactions    transactions[]
+  Images          Images[]
   created_at      DateTime       @default(now())
   updated_at      DateTime?
 }
 
-model escorts {
+model description {
   escort_id     Int       @id @default(autoincrement())
-  email         String    @unique @db.VarChar(200)
-  phone         String    @db.VarChar(200)
-  username      String    @db.VarChar(200)
   city          String?   @db.VarChar(50)
   state         String?   @db.VarChar(50)
   country       String?   @db.VarChar(50)
@@ -49,19 +46,11 @@ model escorts {
   age           String?   @db.VarChar(5)
   shortTimeRate String?   @db.VarChar(10)
   overNightRate String?   @db.VarChar(10)
-  users         users?
-  Images        Images[]
+  gender        String?   @default("Female") @db.VarChar(10)
+  userId        Int       @unique
+  users         users?    @relation(fields: [userId], references: [user_id], onDelete: Cascade)
   created_at    DateTime  @default(now())
   updated_at    DateTime?
-}
-
-model client {
-  client_id  Int       @id @default(autoincrement())
-  email      String    @unique @db.VarChar(200)
-  username   String    @db.VarChar(200)
-  users      users?
-  created_at DateTime  @default(now())
-  updated_at DateTime?
 }
 
 model subscribtions {
@@ -84,18 +73,18 @@ model admin {
 }
 
 model Images {
-  imageId      Int       @id @default(autoincrement())
-  images       String?   @db.VarChar(200)
-  profileImage String?   @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png") @db.VarChar(100)
-  userId       Int
-  escort       escorts?  @relation(fields: [userId], references: [escort_id])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime?
+  imageId   Int       @id @default(autoincrement())
+  images    String?   @db.VarChar(200)
+  userId    Int
+  users     users?    @relation(fields: [userId], references: [user_id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
 }
 
 enum Role {
   Super_Admin
   Admin
+  Escort
 }
 
 model transactions {

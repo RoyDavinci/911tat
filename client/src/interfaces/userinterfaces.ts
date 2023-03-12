@@ -1,4 +1,4 @@
-import { SerializedError } from "@reduxjs/toolkit";
+import { singleUser, userItems } from "./user";
 
 export interface IUser {
 	user_id: number;
@@ -15,7 +15,7 @@ export interface IUser {
 	created_at: Date;
 	updated_at: Date | null;
 	profilePhoto: string | null;
-	token: string | null;
+	role: string;
 }
 export interface payloadResponse {
 	success: boolean;
@@ -35,19 +35,49 @@ export type userInfo = {
 	password: string;
 };
 
+export interface userPayloadResponse {
+	message: string;
+	success: boolean;
+	user: userItems;
+}
+
 export type userSignUp = {
-	first_name: string;
-	last_name: string;
+	country?: string;
+	city?: string;
+	state?: string;
 	password: string;
 	email: string;
-	mobile: string;
+	phone: string;
 	username: string;
-	image: string | Blob;
 };
 
 export interface UserState {
 	message: string;
 	status: "idle" | "loading" | "failed" | "successful";
 	data: payloadResponse;
+	error: payloadErrorResponse;
+}
+
+export interface escortPayloadResponse {
+	message: string;
+	success: boolean;
+	allEscort: userItems[];
+}
+export interface SingleEscortPayloadResponse {
+	message: string;
+	success: boolean;
+	user: userItems;
+}
+
+export interface escortState {
+	message: string;
+	status: "idle" | "loading" | "failed" | "successful";
+	data: escortPayloadResponse;
+	error: payloadErrorResponse;
+}
+export interface SingleEscortState {
+	message: string;
+	status: "idle" | "loading" | "failed" | "successful";
+	data: SingleEscortPayloadResponse;
 	error: payloadErrorResponse;
 }

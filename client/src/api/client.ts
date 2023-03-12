@@ -11,6 +11,9 @@ export const publicRequest = axios.create({
 export const privateRequest = axios.create({
 	baseURL: BASE_URL,
 });
+export const privateFormDataRequest = axios.create({
+	baseURL: BASE_URL,
+});
 
 export const publicFormDataRequest = axios.create({
 	baseURL: BASE_URL,
@@ -26,6 +29,17 @@ publicFormDataRequest.interceptors.request.use(
 );
 
 privateRequest.interceptors.request.use(
+	(config: InternalAxiosRequestConfig) => {
+		config.headers = config.headers ?? {};
+		if (TOKEN) {
+			config.headers.Authorization = `Bearer ${TOKEN}`;
+			config.headers["Content-Type"] = "application/json";
+		}
+		return config;
+	},
+	(error) => Promise.reject(error)
+);
+privateFormDataRequest.interceptors.request.use(
 	(config: InternalAxiosRequestConfig) => {
 		config.headers = config.headers ?? {};
 		if (TOKEN) {

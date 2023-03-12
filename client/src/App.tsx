@@ -5,6 +5,7 @@ import {
 	Home,
 	Login,
 	Main,
+	Pending,
 	Profile,
 	SignUp,
 	SingleEscort,
@@ -31,11 +32,15 @@ function App() {
 		},
 		{
 			element: <Main />,
-			path: "/dashboard",
+			path: "/user",
 			children: [
 				{
 					element: <Profile />,
-					path: "profile",
+					path: "dashboard",
+				},
+				{
+					element: <Pending />,
+					path: "verify",
 				},
 			],
 		},
