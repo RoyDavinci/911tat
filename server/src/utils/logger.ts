@@ -6,7 +6,11 @@ const logger = createLogger({
     // To see more detailed errors, change this to 'debug'
     level: "debug",
     format: format.combine(format.splat(), format.simple()),
-    transports: [new transports.Console()],
+    transports: [
+        new transports.Console(),
+        new transports.File({filename: "error.log", level: "error"}),
+        new transports.File({filename: "combined.log"}),
+    ],
 });
 
 export default logger;

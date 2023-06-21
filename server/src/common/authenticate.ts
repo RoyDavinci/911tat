@@ -23,15 +23,15 @@ export const authenticateLocal = (req: Request, res: Response, next: NextFunctio
 };
 
 export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.headers.authorization)
+    if (!req.headers.authorization) {
         return res.status(STATUS_CODES.PROXY_AUTHENTICATION_REQUIRED).json({message: "header token needed"});
+    }
 
     return passport.authenticate("jwt", (error: Error, user: Express.User) => {
         if (error) {
             return res.status(STATUS_CODES.FORBIDDEN).json({message: error.message});
         }
-        if (!user) return res.status(STATUS_CODES.NOT_FOUND).json({message: "user does not exist ooh"});
-
+        if (!user) return res.status(STATUS_CODES.NOT_FOUND).json({message: "user not found"});
         return req.logIn(user, err => {
             if (err) return res.status(STATUS_CODES.FORBIDDEN).json({message: err.message});
 

@@ -64,7 +64,7 @@ export const create = createSlice({
 			state.data = action.payload;
 			state.status = "successful";
 			localStorage.setItem("token", state.data.token);
-			localStorage.setItem("user", JSON.stringify(state.data.user));
+			localStorage.setItem("user911tat", JSON.stringify(state.data.user));
 		});
 		builder.addCase(createUser.rejected, (state, action) => {
 			state.status = "failed";

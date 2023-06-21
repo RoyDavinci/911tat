@@ -27,7 +27,7 @@ export const Escort = () => {
 			setVerifiedInfo(data.allEscort.slice(0, 10));
 			setUnVerifiedInfo(data.allEscort.slice(10, data.allEscort.length));
 		}
-	}, [status]);
+	}, [status, escort]);
 
 	console.log(escort);
 

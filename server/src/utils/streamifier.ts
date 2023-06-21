@@ -8,13 +8,17 @@ const streamUpload = (req: Buffer): Promise<UploadApiErrorResponse | UploadApiRe
     logger.info("gotten to stream upload");
 
     return new Promise((resolve, reject) => {
-        const stream: UploadStream = cloudinary.uploader.upload_stream({timeout: 60000}, (error, result) => {
-            if (result) {
-                return resolve(result);
-            }
+        const stream: UploadStream = cloudinary.uploader.upload_stream(
+            {timeout: 60000, resource_type: "auto",},
+            (error, result) => {
+                if (result) {
+                    return resolve(result);
+                }
 
-            return reject(error);
-        });
+                return reject(error);
+            }
+        );
+
         if (!req) return {message: "please pass a file"};
 
         return streamifier.createReadStream(req).pipe(stream);

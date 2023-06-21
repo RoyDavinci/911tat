@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -9,82 +10,144 @@ datasource db {
 
 model users {
   user_id         Int            @id @default(autoincrement())
-  username        String         @db.VarChar(200)
+  username        String         @unique @db.VarChar(200)
   email           String         @unique @db.VarChar(200)
   phone           String?
-  profilePhoto    String?        @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+  profilePhoto    String?        @default("")
   password        String         @db.VarChar(200)
   accountStatus   Int            @default(1234567890)
   isVerified      Boolean        @default(false)
   subscription_id Int?           @unique
   adminId         Int?           @unique
-  descriptionId   Int?           @unique
-  role            Role           @default(Escort)
-  subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id], onDelete: Cascade)
-  admin           admin?         @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  description     description?
-  transactions    transactions[]
-  Images          Images[]
   created_at      DateTime       @default(now())
   updated_at      DateTime?
+  login_at        DateTime?
+  descriptionId   Int?           @unique
+  role            Role           @default(Escort)
+  video           String?        @db.VarChar(200)
+  viewed          Int?
+  emailVerified   Boolean        @default(false)
+  otp             String?        @db.VarChar(5)
+  Images          Images[]
+  Reviews         Reviews[]
+  description     description?
+  transactions    transactions[]
+  admin           admin?         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  subscribtions   subscribtions? @relation(fields: [subscription_id], references: [subscription_id], onDelete: Cascade)
 }
 
 model description {
-  escort_id     Int       @id @default(autoincrement())
-  city          String?   @db.VarChar(50)
-  state         String?   @db.VarChar(50)
-  country       String?   @db.VarChar(50)
-  build         String?   @db.VarChar(20)
-  height        String?   @db.VarChar(20)
-  BustSize      String?   @db.VarChar(20)
-  orientation   String?   @db.VarChar(20)
-  anal          String?   @db.VarChar(20)
-  oralSex       String?   @db.VarChar(20)
-  condom        String?   @db.VarChar(20)
-  smoke         String?   @db.VarChar(10)
-  ethnicity     String?   @default("Black") @db.VarChar(10)
-  age           String?   @db.VarChar(5)
-  shortTimeRate String?   @db.VarChar(10)
-  overNightRate String?   @db.VarChar(10)
-  gender        String?   @default("Female") @db.VarChar(10)
-  userId        Int       @unique
-  users         users?    @relation(fields: [userId], references: [user_id], onDelete: Cascade)
-  created_at    DateTime  @default(now())
-  updated_at    DateTime?
+  escort_id           Int       @id @default(autoincrement())
+  city                String?   @default("") @db.VarChar(50)
+  state               String?   @default("") @db.VarChar(50)
+  country             String?   @default("") @db.VarChar(50)
+  build               String?   @default("") @db.VarChar(20)
+  height              String?   @default("") @db.VarChar(20)
+  BustSize            String?   @default("") @db.VarChar(20)
+  orientation         String?   @default("") @db.VarChar(20)
+  anal                String?   @default("") @db.VarChar(20)
+  oralSex             String?   @default("") @db.VarChar(20)
+  condom              String?   @default("") @db.VarChar(20)
+  smoke               String?   @default("") @db.VarChar(10)
+  ethnicity           String?   @default("") @db.VarChar(10)
+  age                 String?   @default("") @db.VarChar(5)
+  shortTimeRate       String?   @default("") @db.VarChar(10)
+  overNightRate       String?   @default("") @db.VarChar(10)
+  created_at          DateTime  @default(now())
+  updated_at          DateTime?
+  userId              Int       @unique
+  gender              String?   @default("") @db.VarChar(10)
+  BDSM                String?   @default("") @db.VarChar(20)
+  GFExperience        String?   @default("") @db.VarChar(20)
+  sixtynine           String?   @default("") @db.VarChar(20)
+  bj                  String?   @default("") @db.VarChar(20)
+  looks               String?   @default("") @db.VarChar(20)
+  bio                 String?   @default("") @db.VarChar(225)
+  FrenchKiss          String?   @default("") @db.VarChar(5)
+  analRimming         String?   @default("") @db.VarChar(5)
+  attendingParties    String?   @default("") @db.VarChar(5)
+  bdsmGiving          String?   @default("") @db.VarChar(5)
+  beachParties        String?   @default("") @db.VarChar(5)
+  beingFilmed         String?   @default("") @db.VarChar(5)
+  bodyWorship         String?   @default("") @db.VarChar(5)
+  cumInMoutn          String?   @default("") @db.VarChar(5)
+  cumOnBody           String?   @default("") @db.VarChar(5)
+  cumOnFace           String?   @default("") @db.VarChar(5)
+  domesticCarer       String?   @default("") @db.VarChar(5)
+  dominationGiving    String?   @default("") @db.VarChar(5)
+  dominationRecieving String?   @default("") @db.VarChar(5)
+  doublePenetration   String?   @default("") @db.VarChar(5)
+  eroticMassage       String?   @default("") @db.VarChar(5)
+  faceSitting         String?   @default("") @db.VarChar(5)
+  femaleStripper      String?   @default("") @db.VarChar(5)
+  fetish              String?   @default("") @db.VarChar(5)
+  foodplay            String?   @default("") @db.VarChar(5)
+  handJob             String?   @default("") @db.VarChar(5)
+  insemination        String?   @default("") @db.VarChar(5)
+  lapDancing          String?   @default("") @db.VarChar(5)
+  maleStripper        String?   @default("") @db.VarChar(5)
+  massage             String?   @default("") @db.VarChar(5)
+  modelling           String?   @default("") @db.VarChar(5)
+  oralWithCondom      String?   @default("") @db.VarChar(5)
+  outCallOverNight    String?   @default("") @db.VarChar(10)
+  outCallShortTime    String?   @default("") @db.VarChar(10)
+  outCallWeekend      String?   @default("") @db.VarChar(10)
+  pegging             String?   @default("") @db.VarChar(5)
+  periodPlay          String?   @default("") @db.VarChar(5)
+  pregnant            String?   @default("") @db.VarChar(5)
+  preparingMeal       String?   @default("") @db.VarChar(5)
+  humiliation         String?   @default("") @db.VarChar(5)
+  weekend             String?   @default("") @db.VarChar(10)
+  displayName         String?   @db.VarChar(50)
+  gangBang            String?   @default("") @db.VarChar(5)
+  goldenShower        String?   @default("") @db.VarChar(5)
+  oralWithoutCondom   String?   @default("") @db.VarChar(5)
+  currency            String?   @default("NGN") @db.VarChar(10)
+  users               users     @relation(fields: [userId], references: [user_id], onDelete: Cascade)
 }
 
 model subscribtions {
-  subscription_id Int       @id @default(autoincrement())
-  months          String    @db.VarChar(100)
-  user_id         Int
-  users           users?
-  created_at      DateTime  @default(now())
-  updated_at      DateTime?
+  subscription_id       Int       @id @default(autoincrement())
+  user_id               Int       @unique
+  subscription_Type     String    @db.VarChar(100)
+  subscription_Duration String    @db.VarChar(100)
+  created_at            DateTime  @default(now())
+  updated_at            DateTime?
+  users                 users?
 }
 
 model admin {
   id        Int       @id @default(autoincrement())
   name      String
   email     String    @unique
-  users     users?
   role      Role
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+  users     users?
 }
 
 model Images {
   imageId   Int       @id @default(autoincrement())
   images    String?   @db.VarChar(200)
   userId    Int
-  users     users?    @relation(fields: [userId], references: [user_id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime?
+  users     users     @relation(fields: [userId], references: [user_id], onDelete: Cascade)
+
+  @@index([userId], map: "Images_userId_fkey")
 }
 
-enum Role {
-  Super_Admin
-  Admin
-  Escort
+model Reviews {
+  reviewId  Int       @id @default(autoincrement())
+  review    String    @db.VarChar(255)
+  userId    Int
+  rating    Int
+  name      String    @default("Anonymous")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  users     users     @relation(fields: [userId], references: [user_id], onDelete: Cascade)
+
+  @@index([userId], map: "Reviews_userId_fkey")
 }
 
 model transactions {
@@ -97,9 +160,17 @@ model transactions {
   biller_Reference      String
   transaction_reference String    @db.VarChar(50)
   userId                Int
-  users                 users?    @relation(fields: [userId], references: [user_id])
   createdAt             DateTime  @default(now())
   updatedAt             DateTime?
+  users                 users     @relation(fields: [userId], references: [user_id], onDelete: Cascade)
+
+  @@index([userId], map: "transactions_userId_fkey")
+}
+
+enum Role {
+  Super_Admin
+  Admin
+  Escort
 }
 
 enum Status {

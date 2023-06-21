@@ -14,6 +14,7 @@ const envSchema = Joi.object({
     SUPER_ADMIN_EMAIL: Joi.string().required(),
     SUPER_ADMIN_PASSWORD: Joi.string().required(),
     SUPER_ADMIN_ROLE: Joi.string().required(),
+    FRONTEND_HOST: Joi.string().required(),
 }).unknown();
 
 const {error, value: envVars} = envSchema.validate(process.env);
@@ -35,6 +36,7 @@ const serverConfig = {
         SUPER_ADMIN_EMAIL: envVars.SUPER_ADMIN_EMAIL,
         SUPER_ADMIN_PASSWORD: envVars.SUPER_ADMIN_PASSWORD,
         SUPER_ADMIN_ROLE: envVars.SUPER_ADMIN_ROLE,
+        FRONTEND_HOST: envVars.FRONTEND_HOST,
     },
 };
 export default serverConfig;

@@ -1,7 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import {PassportStatic} from "passport";
 import passportLocal from "passport-local";
 import passportJwt from "passport-jwt";
 import bcrypt from "bcryptjs";
+// import {users} from "@prisma/client";
 import config from "../config";
 import prisma from "../db/prisma";
 import logger from "../utils/logger";
@@ -17,6 +19,7 @@ const passportService = (passport: PassportStatic) => {
             const user = await prisma.users.findUnique({
                 where: {user_id: Number(payload.id)},
             });
+
             if (!user) return done(null, false, {message: "user does not exist"});
 
             return done(null, user, {message: "user authenticated"});
@@ -31,8 +34,8 @@ const passportService = (passport: PassportStatic) => {
             },
             async (username, password, done) => {
                 try {
-                    const user = await prisma.users.findUnique({
-                        where: {email: username},
+                    const user = await prisma.users.findFirst({
+                        where: {OR: [{email: username}, {username}]},
                     });
                     if (!user)
                         return done(null, false, {

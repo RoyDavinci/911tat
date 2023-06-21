@@ -92,8 +92,8 @@ export const Pending = () => {
 			console.log(data);
 			const response = data as payloadResponse;
 			if (response.success) {
-				localStorage.removeItem("user");
-				localStorage.setItem("user", JSON.stringify(response.user));
+				localStorage.removeItem("user911tat");
+				localStorage.setItem("user911tat", JSON.stringify(response.user));
 				window.location.reload();
 				toast("upload success");
 			} else {
@@ -131,8 +131,8 @@ export const Pending = () => {
 			console.log(data);
 			const response = data as payloadResponse;
 			if (response.success) {
-				localStorage.removeItem("user");
-				localStorage.setItem("user", JSON.stringify(response.user));
+				localStorage.removeItem("user911tat");
+				localStorage.setItem("user911tat", JSON.stringify(response.user));
 				window.location.reload();
 				toast("upload success");
 			} else {

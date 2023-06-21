@@ -17,18 +17,14 @@ export const escortCreateValidator = [
         .withMessage("password must be string"),
     check("email")
         .notEmpty()
-        .withMessage("email is requiredd")
+        .withMessage("email is required")
         .bail()
         .isEmail()
         .withMessage("email field must be of email type"),
-    check("phone")
-        .notEmpty()
-        .withMessage("phone is required")
-        .bail()
-        .isMobilePhone("en-NG")
-        .withMessage("mobile must be nigerian number")
-        .bail()
-        .isString()
-        .withMessage("phone must be string"),
+    check("confirmPassword")
+        .exists({checkFalsy: true})
+        .withMessage("You must type a confirmation password")
+        .custom((value, {req}) => value === req.body.password)
+        .withMessage("The passwords do not match"),
     validationErrorHandler,
 ];

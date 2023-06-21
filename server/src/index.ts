@@ -13,6 +13,8 @@ import apiV1Router from "./routes/routes";
 import logger from "./utils/logger";
 import config from "./config";
 import createSuperAdminOnStartup from "./db/superAdmin";
+import swaggerDocs from "./utils/swagger";
+import task from "./utils/cronJob";
 
 const app = express();
 
@@ -37,6 +39,7 @@ cloudinary.config({
 });
 
 app.use(express.json());
+
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(helmet());
@@ -55,6 +58,7 @@ const serverDebugger = debug("jekawin:server");
 process.on("unhandledRejection", (reason, p) => logger.error("Unhandled Rejection at: Promise ", p, reason));
 
 server.listen(port, () => {
+    task();
     if (config.isDevelopment) logger.info(`server port: http://localhost:${port}`);
 });
 
@@ -87,6 +91,7 @@ function onListening() {
     const addr = server.address();
     const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
     serverDebugger(`Listening on ${bind}`);
+    swaggerDocs(app, Number(port));
 }
 
 server.on("error", onError);
